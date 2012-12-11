@@ -13,8 +13,12 @@ SD_FAT:=SD_CONTENT.fat
 FULL_IMG:=full_sd_image.img
 SD_MNT:=SD_MNT
 SD_MBR:=SD_MBR.bin
+CAM:=CAM/mca_cam.upb
+CAIDS:=CAM/CAIDS
+CAM_VERSION:=CAM/VERSION
+CAM_NAME:=CAM/NAME
 
-all: $(MCA_CARD) $(JFFS2) $(FULL_IMG)
+all: $(MCA_CARD) $(JFFS2) $(CAM)
 
 $(ZIMAGE): $(INITRAMFS)
 	cd KERNEL/ && PATH=$(PATH):$(ROOT_DIR)/tools/ $(ROOT_DIR)/tools/repack-zImage.sh -p
@@ -43,3 +47,6 @@ $(FULL_IMG): $(SD_FAT) $(APEX_SD) $(SD_MBR)
 	dd if=$(SD_MBR) of=$(FULL_IMG) bs=512 conv=notrunc
 	dd if=$(APEX_SD) of=$(FULL_IMG) bs=512 seek=62 conv=notrunc
 	dd if=$(SD_FAT) of=$(FULL_IMG) oflag=append conv=notrunc
+
+$(CAM): $(CAIDS) $(CAM_VERSION) $(CAM_NAME)
+	tools/mca_tool.pl -r -R `cat $(CAIDS)` -N `cat $(CAM_NAME)` -v `cat $(CAM_VERSION)` $(CAM)
