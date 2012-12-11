@@ -53,7 +53,8 @@ $(SD_FAT): $(JFFS2) $(MCA_CARD)
 .PHONY: image
 image:  $(FULL_IMG)
 $(FULL_IMG): $(SD_FAT) $(APEX_SD) $(SD_MBR)
-	dd if=/dev/zero of=$(FULL_IMG) bs=512 count=80103
+	#dd if=/dev/zero of=$(FULL_IMG) bs=512 count=80103
+	dd if=/dev/zero of=$(FULL_IMG) bs=512 count=126852
 	dd if=$(SD_MBR) of=$(FULL_IMG) bs=512 conv=notrunc
 	dd if=$(APEX_SD) of=$(FULL_IMG) bs=512 seek=62 conv=notrunc
 	dd if=$(SD_FAT) of=$(FULL_IMG) oflag=append conv=notrunc
