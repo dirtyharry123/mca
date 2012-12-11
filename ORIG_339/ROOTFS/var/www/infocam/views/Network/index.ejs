@@ -1,0 +1,136 @@
+<div class="contCuerpo">
+	<div class="cuerpoTop"></div>
+	<div class="cuerpo">
+		<strong>Network</strong>
+		<div class="cuerpolinea"></div>
+		<div class="cuerpoizq">
+			<ul>
+				<li>Settings</li>
+			</ul>	
+		</div>
+		<form method="post" name="network" action="/infocam/Network/Save" onsubmit="return checkValues()">
+			<div class="cuerpoder V1N">
+				<p><strong>Settings</strong></p>
+				<p>Please complete the following fields:</p>
+
+				<div class="txtform V1N">
+					<label><input type="radio" name="mode" id="dhcp" value="DHCP" onclick="disableTextBoxes()" @@isDHCPchecked/>DHCP</label>
+				</div>
+				<div class="campoform V1N"></div>
+				<div class="clear"></div>
+
+				<div class="txtform V1N">
+					<label><input type="radio" name="mode" id="static" value="STATIC" onclick="enableTextBoxes()" @@isStaticIPchecked/>Static IP</label>
+				</div>
+				<div class="campoform V1N"></div>
+				<div class="clear"></div>
+
+				<div class="txtformright V1G">IP</div>
+				<div class="campoform">
+					<label>
+						<input type="text" name="ip" id="ip" value="@@localIP" @@IPstatus/>
+					</label>
+				</div>
+				<div class="clear"></div>
+
+				<div class="txtformright V1G">Netmask</div>
+				<div class="campoform">
+					<label>
+						<input type="text" name="netmask" id="netmask" value="@@localNetmask" @@netmaskStatus/>
+					</label>
+				</div>
+				<div class="clear"></div>
+
+				<div class="txtformright V1G">Gateway</div>
+				<div class="campoform">
+					<label>
+						<input type="text" name="gateway" id="gateway" value="@@localGateway" @@gatewayStatus/>
+					</label>
+				</div>
+				<div class="clear"></div>
+
+				<div class="txtformright V1G">DNS 1</div>
+				<div class="campoform">
+					<label>
+						<input type="text" name="dns1" id="dns1" value="@@localDNS1" @@dns1Status/>
+					</label>
+				</div>
+				<div class="clear"></div>
+
+				<div class="txtformright V1G">DNS2</div>
+				<div class="campoform">
+					<label>
+						<input type="text" name="dns2" id="dns2" value="@@localDNS2" @@dns2Status/>
+					</label>
+				</div>
+				<div class="clear"></div>
+
+				<div class="txtform V1N"></div>
+				<div class="campoform">
+					<input type="submit" name="save" id="save" value="Save"/>
+				</div>
+				<div class="clear"></div>
+				
+				<p><strong>@@resultMessage</strong></p>
+				
+			</div>
+		</form	>
+		<div class="clear"></div>
+	</div>
+	<div class="cuerpoBot"></div>
+</div>
+
+<script type="text/javascript">
+<!--
+
+function enableTextBoxes()
+{
+	document.network.ip.disabled = false;
+	document.network.netmask.disabled = false;
+	document.network.gateway.disabled = false;
+	document.network.dns1.disabled = false;
+	document.network.dns2.disabled = false;
+}
+
+function disableTextBoxes()
+{
+	document.network.ip.disabled = true
+	document.network.netmask.disabled = true
+	document.network.gateway.disabled = true
+	document.network.dns1.disabled = true
+	document.network.dns2.disabled = true
+}
+
+function checkValues()
+{
+	ipRegExp = new RegExp("^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$")
+
+	if (document.network.static.checked){	
+		if (! ipRegExp.test(document.network.ip.value)){
+			alert("Bad IP Value");
+			return false;
+		}
+		else if (! ipRegExp.test(document.network.netmask.value)){
+			alert("Bad Netwask Value");
+			return false;
+		}
+		else if (! ipRegExp.test(document.network.gateway.value)){
+			alert("Bad Gateway Value");
+			return false;
+		}
+		else if (! ipRegExp.test(document.network.dns1.value)){
+			alert("Bad Primary DNS Value");
+			return false;
+		}
+		else if (! ipRegExp.test(document.network.dns2.value)){
+			alert("Bad Secondary DNS Value");
+			return false;
+		}	
+	}
+
+	alert("You are going to be redirected.");
+	return true;
+}
+
+//-->
+</script>

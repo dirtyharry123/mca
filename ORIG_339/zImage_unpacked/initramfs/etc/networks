@@ -1,0 +1,2 @@
+default		0.0.0.0		# default route    - mandatory
+loopnet		127.0.0.0	# loopback network - mandatory

@@ -1,0 +1,27 @@
+
+debug: {
+    adapter: "sqlite3",
+    database: "db/infocam.sdb",
+    username: "",
+    password: "",
+    timeout: 5000,
+    trace: true,
+},
+
+test: {
+    adapter: "sqlite3",
+    database: "db/infocam.sdb",
+    username: "",
+    password: "",
+    timeout: 5000,
+    trace: false,
+},
+
+production: {
+    adapter: "sqlite3",
+    database: "db/infocam.sdb",
+    username: "",
+    password: "",
+    timeout: 5000,
+    trace: false,
+},

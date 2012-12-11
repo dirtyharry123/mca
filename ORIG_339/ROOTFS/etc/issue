@@ -1,0 +1,9 @@
+
+        Welcome to the LTIB Embedded Linux Environment
+
+!!!!! WARNING !!!!!!!
+
+The default password for the root account is: root
+please change this password using the 'passwd' command
+and then edit this message (/etc/issue) to remove this message
+

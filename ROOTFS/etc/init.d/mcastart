@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+  echo "Start the MCA CAM"
+  echo "  -insert mio driver module"  
+  insmod /mio.ko
+
+  mkfifo -m 666 /tmp/mdbg
+  mkfifo -m 666 /tmp/mdvbi
+  mkfifo -m 666 /tmp/mflt
+  mkfifo -m 666 /tmp/mdesc
+  sync
+
+  OSCAM=/oscam-1.20-unstable_svn7294-arm-linux-gnueabi-mca
+  STAT=`busybox stat -c %Y $OSCAM`
+  date -s "1970-01-01 01:00:$STAT"  
+
+  echo "  -activate cam"
+  mcam mca test &
+
+  echo "MCA CAM started..."
+fi

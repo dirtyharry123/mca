@@ -1,0 +1,8 @@
+appweb: Error: Ignoring unknown directive "AuthDigestQop"
+At line 159 in /etc/appweb/appweb.conf
+
+Make sure the required modules are loaded. 
+
+appweb: 1: Started at Thu Jan 01 00:59:44 1970 UTC
+appweb: 1: Starting host named: "127.0.0.1:80"
+appweb: 1: HTTP services are ready (single-threaded)

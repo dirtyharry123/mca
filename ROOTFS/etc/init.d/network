@@ -1,0 +1,49 @@
+#!/bin/sh
+
+if [ ! -x /sbin/ifconfig ]
+then
+    echo "/sbin/ifconfig missing, unable to configure the network"
+    exit 0
+fi
+
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    if [ -f /etc/sysctl.conf -a -x /sbin/sysctl ]
+    then
+        echo "Running sysctl"
+        sysctl -p /etc/sysctl.conf >/dev/null 2>&1
+    fi
+
+    #echo "Setting up networking on loopback device: "
+    #ifconfig lo 127.0.0.1
+    #route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+    # remove the nameserver file
+    echo "" > /tmp/resolv.conf
+
+    if [ "$SYSCFG_IFACE0" = "y" ]
+    then
+        echo "Setting up networking on $INTERFACE0: "
+        if [ "$(mcai GET NET_TYPE)" = "AUTO" ]
+        then
+            $SYSCFG_DHCPC_CMD $INTERFACE0
+        else  
+            # non-dhcp network startup            
+            ifconfig $INTERFACE0 $(mcai GET NET_IPADDR) netmask $(mcai GET NET_NETMASK)
+
+            GATEWAY0=$(mcai GET NET_GATEWAY)
+            if [ -n "$GATEWAY0" ]
+            then 
+                echo "Adding static route for default gateway to $GATEWAY0: "
+                route add default gateway $GATEWAY0 $INTERFACE0
+            fi
+            NAMESERVER0=$(mcai GET NET_DNS1)
+            if [ -n "$NAMESERVER0" ]
+            then
+                echo "Setting nameserver to $NAMESERVER0 in /etc/resolv.conf: "
+                echo "nameserver $NAMESERVER0" >> /tmp/resolv.conf
+            fi
+        fi        
+    fi
+fi

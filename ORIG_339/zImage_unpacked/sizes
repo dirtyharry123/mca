@@ -1,0 +1,15 @@
+# Unpacking sizes
+size_decompression_code=14068	# 0x36f4
+size_piggy_gz_piggy_trailer=4180236	# 0x3fc90c
+size_piggy=5770352	# 0x580c70
+size_piggy_gz=3855270	# 0x3ad3a6
+size_padding_piggy=2	# 0x2
+size_piggy_trailer=324964	# 0x4f564
+size_kernel_img=117088	# 0x1c960
+size_ramfs_cpio_gz=1995763	# 0x1e73f3
+size_padding3=2737	# 0xab1
+size_ramfs_gz_part3=5653264	# 0x564310
+size_ramfs_cpio=4782080	# 0x48f800
+size_part3=3654764	# 0x37c46c
+compressed="gz"
+gz=""

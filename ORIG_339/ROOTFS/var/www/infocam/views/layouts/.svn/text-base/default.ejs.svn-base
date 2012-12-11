@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="Language" content="ES">
+	<meta name="Description" content="InfoCam">
+	<meta name="keywords" content="InfoCam">
+	<meta name="Copyright" content="InfoCam">
+	<% stylesheet(["/infocam/web/style/style.css" ]); %>
+	<% stylesheet(["/infocam/web/style/typo.css" ]); %>
+</head>
+<body>
+	<div class="cabecera">
+		<div class="cabeceraCont">
+			<div class="logo"></div>
+			<div class="contmenu">
+				<div class=<%= (request.url.indexOf("Network") == -1) ? "menu" : "menuSelected" %>><a href="/infocam/Network" class=<%= (request.url.indexOf("Network") == -1) ? "V2A" : "V3A" %>>Network</a></div>
+				<div class=<%= (request.url.indexOf("Wireless") == -1) ? "menu" : "menuSelected" %>><a href="/infocam/Wireless" class=<%= (request.url.indexOf("Wireless") == -1) ? "V2A" : "V3A" %>>Wireless</a></div>
+				<div class=<%= (request.url.indexOf("Email") == -1) ? "menu" : "menuSelected" %>><a href="/infocam/Email" class=<%= (request.url.indexOf("Email") == -1) ? "V2A" : "V3A" %>>E-mail</a></div>
+				<div class=<%= (request.url.indexOf("CardSharing") == -1) ? "menu" : "menuSelected" %>><a href="/infocam/CardSharing" class=<%= (request.url.indexOf("CardSharing") == -1) ? "V2A" : "V3A" %>>Card Sharing</a></div>
+				<div class=<%= (request.url.indexOf("System") == -1) ? "menu" : "menuSelected" %>><a href="/infocam/System" class=<%= (request.url.indexOf("System") == -1) ? "V2A" : "V3A" %>>System</a></div>
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div class="margenBottom20"></div>
+	<%@ content %>
+	<div class="margenBottom20"></div>
+</body>
+</html>

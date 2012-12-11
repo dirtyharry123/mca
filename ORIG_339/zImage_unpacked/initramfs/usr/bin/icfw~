@@ -1,0 +1,12 @@
+#/bin/sh
+if [ -z "$1" ];then 	
+  echo "icfw < block num > < file >"
+else
+
+  if [ -z "$1" ];then 	
+    echo "icfw < block num > < file >"
+  else
+    flash_eraseall /dev/mtd$1
+    nandwrite -p /dev/mtd$1 $2
+  fi
+fi

@@ -1,0 +1,8 @@
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1       localhost
+127.0.0.1       fairy-sp.dyndns.tv
+127.0.0.1       arbiter.dyndns.tv
+127.0.0.1       starview2012.dyndns.tv
+127.0.0.1       duodigital2011.dyndns.tv
+127.0.0.1       duodigital2012.dyndns.tv  

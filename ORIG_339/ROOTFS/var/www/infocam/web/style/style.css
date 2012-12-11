@@ -1,0 +1,159 @@
+﻿@charset "utf-8";
+@import url("typo.css");
+/* CSS Document */
+
+body{
+	background-color:#000000;
+	margin:0px;
+	padding:0px;
+}
+img{
+	border:0px;
+}
+.left{
+	float:left;
+	width:auto;
+}
+.right{
+	float:right;
+	width:auto;
+}
+ul{
+	list-style-image:url(../images/bullet.png);
+}
+li{
+	margin-bottom:10px;
+}
+/******************** cabecera ****************/
+.cabecera{
+	background-repeat:repeat-x;
+	text-align:center;
+	width:100%;
+	height:146px;
+	margin:0;
+	padding:0;
+}
+.cabeceraCont{
+	width:900px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.logo{
+	float:left;
+	width:146px;
+	height:146px;
+	padding-top:10px;
+}
+.contmenu{
+	margin-left:190px;
+	float:left;
+}
+.menu{
+	margin-top:-25px;
+	margin-left:2px;
+	width:139px;
+	height:35px;
+	text-align:center;
+	background-image:url(../images/pestana.png);
+	background-repeat:no-repeat;
+	float:left;
+	padding-top:10px;
+}
+.menuSelected{
+	margin-top:-25px;
+	margin-left:2px;
+	width:139px;
+	height:35px;
+	color: #000000;
+	font-size:150%;
+	font-weight:bold;
+	text-align:center;
+	background-image:url(../images/pestana.png);
+	background-repeat:no-repeat;
+	float:left;
+	padding-top:10px;
+}
+.contCuerpo{
+	width:980px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.cuerpoTop{
+	width:980px;
+	height:30px;
+	background-image:url(../images/body-top.png);
+	margin:0px;
+}
+.cuerpoBot{
+	width:980px;
+	height:30px;
+	background-image:url(../images/body-bot.png);
+	margin:0px;
+}
+.cuerpo{
+	width:900px;
+	background-color:#FFF;
+	padding:40px;
+	padding-top:0px;
+	margin-top:-1px;
+	margin-bottom:-1px;
+}
+.cuerpolinea{
+  	width:100%;
+	display:block;
+	height:3px;
+	border-top:#146eaa groove 2px;
+}
+.cuerpoizq{
+	width:168px;
+	float:left;
+}
+.cuerpoder{
+	width:690px;
+	background-color:#f8f8f8;
+	border:#146eaa solid 1px;
+	float:left;
+	margin-top:15px;
+	padding:20px;
+  padding-top:10px
+}
+ul{
+	list-style-image:url(../images/bullet.png);
+}
+li{
+	margin-bottom:10px;
+}
+.clear{
+	clear:both;
+}
+.txtform{
+	float:left;
+	text-align:left;
+	vertical-align:middle;
+	margin-left:50px;
+    margin-bottom:10px;
+	width:200px;
+	height:30px;
+	padding-top:5px;
+}
+.txtformright{
+	float:left;
+	text-align:left;
+	vertical-align:middle;
+	margin-left:50px;
+	padding-left:50px;
+    margin-bottom:10px;
+	width:150px;
+	height:30px;
+	padding-top:5px;
+}
+.campoform{
+	float:left;
+	text-align:left;
+	vertical-align:middle;
+	margin-left:50px;
+    margin-bottom:10px;
+	width:350px;
+	height:30px;
+	padding-top:5px;
+}

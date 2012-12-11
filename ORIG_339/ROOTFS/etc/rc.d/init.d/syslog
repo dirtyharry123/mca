@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if [ ! -x /sbin/syslogd -a ! -x /sbin/klogd ]
+then
+    exit 0
+fi
+if [ -f /etc/sysconfig/syslog ]
+then
+    . /etc/sysconfig/syslog
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then
+    killall klogd
+    killall syslogd
+fi
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    echo Starting syslogd and klogd
+    if [ -n "$SYSLOG_SOCKET_FILE" ]
+    then
+        SYSLOGD_OPTIONS="$SYSLOGD_OPTIONS -p $SYSLOG_SOCKET_FILE"
+    fi
+    /sbin/syslogd $SYSLOGD_OPTIONS
+    /sbin/klogd $KLOGD_OPTIONS
+fi

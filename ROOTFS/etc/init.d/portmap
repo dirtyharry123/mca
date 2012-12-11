@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ ! -x /sbin/portmap ]
+then
+    exit 0
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then                                                                            
+    echo "Stopping the port mapper: "
+    killall portmap
+fi
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    echo "Starting the port mapper: "
+    /sbin/portmap
+fi

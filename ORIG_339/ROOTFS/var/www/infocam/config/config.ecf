@@ -1,0 +1,5 @@
+
+app: {
+    mode: "debug",
+    webserver: '"/usr/lib/appweb/bin/appweb" --home "/usr/lib/appweb/lib" --ejs "/:/var/www/infocam" --log stdout:2',
+},

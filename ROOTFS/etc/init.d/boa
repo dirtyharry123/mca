@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [ ! -x /usr/sbin/boa ]
+then
+    exit 0
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then                                                                            
+    echo "Stopping the boa webserver: "
+    killall boa
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    echo "Starting the boa webserver: "
+    /usr/sbin/boa $BOA_ARGS
+fi

@@ -1,0 +1,359 @@
+#!/bin/sh
+#Mount things needed by this script
+mkdir /mnt/sd
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mdev -s
+mount -t jffs2  /dev/mtdblock5 /var/mca
+
+#Disable kernel messages from popping onto the screen
+#echo 0 > /proc/sys/kernel/printk
+#Clear the screen
+#clear
+#Create all the symlinks to /bin/busybox
+#Create device nodes
+#mknod /dev/null c 1 3
+#mknod /dev/console c 5 0
+#mknod /dev/tty c 5 0
+#mknod /dev/ttyAMA0 c 5 0
+#mdev -s
+#mount -t yaffs2 /dev/mtdblock4 /usr/mca
+
+insmod /etc/mega_io.ko
+echo d > /proc/mega_io
+echo "########################################################"
+echo "###############     STARTING SYSTEM     ################"
+echo "########################################################"
+
+ifconfig lo 127.0.0.1
+route add -net 127.0.0.0 netmask 255.0.0.0 lo
+insmod /etc/Wireless/rt3070sta.ko 
+sleep 5
+ifconfig ra0 up
+iwconfig ra0 rate auto
+sleep 5
+
+
+#Function for parsing command line options with "=" in them
+# get_opt("init=/sbin/init") will return "/sbin/init"
+boot_config_file="/mnt/sd/mcaboot.ini"
+
+isfile()
+{
+  if [ -f "$@" ]
+  then
+    echo y
+  else
+    echo n
+  fi
+}
+
+get_config() {
+  cat $boot_config_file | grep "$@=" | grep -v '#' | cut -d "=" -f 2
+}
+get_opt() {
+echo "$@" | cut -d "=" -f 2
+}
+#Defaults
+init="/sbin/init"
+root="/dev/ram0"
+WifiDriver=/etc/Wireless/rt3070sta.ko
+NetworkType=
+AuthMode=
+EncrypType=
+SSID=mca
+WPAPSK=
+DefaultKeyID=
+Key1=
+Key2=
+Key3=
+Key4=
+nfsroot=
+nettype="AUTO"
+ipaddr=
+auserver="192.168.1.251"
+ins_mca="no"
+delay_val=5
+boot_mode="default"
+upgrade="no"
+#Process command line options
+for i in $(cat /proc/cmdline); do
+case $i in
+  root\=*)root=$(get_opt $i);;
+  init\=*)init=$(get_opt $i);;
+  WifiDriver\=*)WifiDriver=$(get_opt $i);;
+  NetworkType\=*)NetworkType=$(get_opt $i);;
+  AuthMode\=*)AuthMode=$(get_opt $i);;
+  EncrypType\=*)EncrypType=$(get_opt $i);;
+  SSID\=*)SSID=$(get_opt $i);;
+  WPAPSK\=*)WPAPSK=$(get_opt $i);;
+  DefaultKeyID\=*)DefaultKeyID=$(get_opt $i);;
+  Key1\=*)Key1=$(get_opt $i);;
+  Key2\=*)Key2=$(get_opt $i);;
+  Key3\=*)Key3=$(get_opt $i);;
+  Key4\=*)Key4=$(get_opt $i);;
+  nfsroot\=*)nfsroot=$(get_opt $i);;
+  nettype\=*)nettype=$(get_opt $i);;
+  ipaddr\=*)ipaddr=$(get_opt $i);;
+  auserver\=*)auserver=$(get_opt $i);;
+  ins_mca\=*)ins_mca=$(get_opt $i);;
+  upgrade\=*)upgrade=$(get_opt $i);;
+esac
+done
+
+# Data
+
+
+mount -t vfat /dev/mmcblk0p1 /mnt/sd
+
+if [ "$upgarde" = "yes" ];then
+mcai ini_up
+else
+mcai ini
+fi
+
+
+if [ "$upgrade" = "yes" ];then
+  boot_config_file="/var/mca/mca.ini"
+else
+
+  if [ "$(isfile "$boot_config_file")" = "n" ];then
+    boot_config_file="/var/mca/mca.ini"
+  fi
+
+fi
+
+
+
+echo $boot_config_file
+if [ "$(isfile "$boot_config_file")" = "y" ];then
+echo "reading cfg file"
+if [ -n "$(mcai GET BOOT_ROOT)" ];then 	
+root=$(mcai GET BOOT_ROOT)
+fi
+if [ -n "$(mcai GET BOOT_INIT)" ];then 	
+init=$(mcai GET BOOT_INIT)
+fi
+if [ -n "$(mcai GET WIFI_NETWORK_TYPE)" ];then 	
+NetworkType=$(mcai GET WIFI_NETWORK_TYPE)
+fi
+if [ -n "$(mcai GET WIFI_AUTH_MODE)" ];then 	
+AuthMode=$(mcai GET WIFI_AUTH_MODE)
+fi
+if [ -n "$(mcai GET WIFI_ENCRYPT_TYPE)" ];then 	
+EncrypType=$(mcai GET WIFI_ENCRYPT_TYPE)
+fi
+if [ -n "$(mcai GET WIFI_SSID)" ];then 	
+SSID=$(mcai GET WIFI_SSID)
+fi
+if [ -n "$(mcai GET WIFI_WPAPSK)" ];then 	
+WPAPSK=$(mcai GET WIFI_WPAPSK)
+fi
+if [ -n "$(mcai GET WIFI_DEFAULT_KEY_ID)" ];then 	
+DefaultKeyID=$(mcai GET WIFI_DEFAULT_KEY_ID)
+fi
+if [ -n "$(mcai GET WIFI_KEY1)" ];then 	
+Key1=$(mcai GET WIFI_KEY1)
+fi
+if [ -n "$(mcai GET WIFI_KEY2)" ];then 	
+Key2=$(mcai GET WIFI_KEY2)
+fi
+if [ -n "$(mcai GET WIFI_KEY3)" ];then 	
+Key3=$(mcai GET WIFI_KEY3)
+fi
+if [ -n "$(mcai GET WIFI_KEY4)" ];then 	
+Key4=$(mcai GET WIFI_KEY4)
+fi
+if [ -n "$(mcai GET BOOT_NFSROOT)" ];then 	
+nfsroot=$(mcai GET BOOT_NFSROOT)
+fi
+if [ -n "$(mcai GET NET_TYPE)" ];then 	
+nettype=$(mcai GET NET_TYPE)
+fi
+if [ -n "$(mcai GET NET_IPADDR)" ];then 	
+ipaddr=$(mcai GET NET_IPADDR)
+fi
+if [ -n "$(mcai GET BOOT_AUSERVER)" ];then 	
+auserver=$(mcai GET BOOT_AUSERVER)
+fi
+
+if [ "$upgarde" = "yes" ];then
+ins_mca=upgrade
+else
+  if [ "$boot_config_file" = "/mnt/sd/mcaboot.ini" ];then
+    if [ -n "$(mcai GET BOOT_INS_MCA)" ];then 	
+      ins_mca=$(mcai GET BOOT_INS_MCA)
+    fi
+  fi
+fi
+
+
+if [ -n "$(mcai GET BOOT_DELAY_VAL)" ];then 	
+delay_val=$(mcai GET BOOT_DELAY_VAL)
+fi
+if [ -n "$(mcai GET BOOT_BOOT_MODE)" ];then 	
+boot_mode=$(mcai GET BOOT_BOOT_MODE)
+fi
+fi
+
+
+if [ -n "$NetworkType" ];then 	
+  echo NetworkType=$NetworkType
+  iwpriv ra0 set NetworkType=$NetworkType 
+fi
+if [ -n "$AuthMode" ];then 	
+  echo AuthMode=$AuthMode
+  iwpriv ra0 set AuthMode=$AuthMode
+fi
+if [ -n "$EncrypType" ];then 	
+  echo EncrypType=$EncrypType
+  iwpriv ra0 set EncrypType=$EncrypType
+fi
+if [ -n "$SSID" ];then 		
+  echo SSID=$SSID
+  iwpriv ra0 set SSID="$SSID"
+fi
+if [ -n "$WPAPSK" ];then 	
+  echo WPAPSK=$WPAPSK
+  iwpriv ra0 set WPAPSK="$WPAPSK"
+fi
+if [ -n "$DefaultKeyID" ];then 	
+  echo DefaultKeyID=$DefaultKeyID
+  iwpriv ra0 set DefaultKeyID=$DefaultKeyID
+fi
+if [ -n "$Key1" ];then 	
+  echo Key1=$Key1
+  iwpriv ra0 set Key1="$Key1"
+fi
+if [ -n "$Key2" ];then 	
+  echo Key2=$Key2
+  iwpriv ra0 set Key2="$Key2"
+fi
+if [ -n "$Key3" ];then 	
+  echo Key3=$Key3
+  iwpriv ra0 set Key3="$Key3"
+fi
+if [ -n "$Key4" ];then 	
+  echo Key4=$Key4
+  iwpriv ra0 set Key4="$Key4"
+fi
+sleep $delay_val
+
+
+if [ -n "$nettype" ];then 	
+    echo nettype=$nettype
+  if [ "$nettype" = "AUTO" ];then 	
+    udhcpc -b -i ra0
+  else
+    if [ -n "$ipaddr" ];then 	
+      echo ipaddr=$ipaddr
+      if [ "$ipaddr" = "auto" ];then 	
+	udhcpc -b -i ra0
+      else
+	ifconfig ra0 $ipaddr
+      fi
+    fi 	
+  fi
+fi
+sleep $delay_val
+
+#hostname mca
+
+#iwpriv ra0 set FragThreshold=512
+#iwpriv ra0 set RTSThreshold=512
+
+echo "end configuration"
+if [ "$upgrade" = "yes" ];then
+  echo "Upgrade"
+  flash_eraseall /dev/mtd6
+  sync
+  nandwrite /dev/mtd6 /mnt/sd/rootfs.jffs2
+  sync
+  
+else 
+  if [ "$ins_mca" = "yes" ];then
+      echo "Install"
+      echo f > /proc/mega_io
+#      mcai e d c
+      mcai e 
+      ls -l /tmp/
+    #  flash_eraseall /dev/mtd5
+      flash_eraseall /dev/mtd6
+      flash_eraseall /dev/mtd7
+      flash_eraseall /dev/mtd8
+      sync
+
+      nandwrite /dev/mtd6 /mnt/sd/rootfs.jffs2
+    # cp $boot_config_file /var/mca
+
+      echo "install" > /var/mca/install
+      sync
+  else
+    sync
+    ls -l /tmp/
+  fi
+fi
+
+
+
+#/usr/bin/icau $auserver
+
+
+
+#mount -t jffs2 /dev/mtdblock6 $WORK_DIR
+
+
+#Mount the root device
+case "$boot_mode" in
+  'nfs')
+    echo nfsroot=$nfsroot
+    mount -t nfs -o nolock,tcp $nfsroot /newroot
+  ;;
+  'ramfs')
+    echo "to do ramfs!!"
+  ;;
+  'sd')
+    echo "to do sd"
+  ;;
+  'default')
+
+
+  case "$(mcai GET BOOT_SELECT)" in
+    'master')	
+      echo BOOT ON MASTER
+      mount -t jffs2 /dev/mtdblock6 /newroot
+    ;;
+    'disk1')
+      echo BOOT ON DISK1
+      mount -t jffs2 /dev/mtdblock7 /newroot
+    ;;
+    'disk2')
+      echo BOOT ON DISK2
+      mount -t jffs2 /dev/mtdblock8 /newroot
+    ;;
+  esac
+  ;;
+esac
+
+
+
+
+#Check if $init exists and is executable
+
+if [[ -x "/newroot/${init}" ]] ; then
+#Unmount all other mounts so that the ram used by
+#the initramfs can be cleared after switch_root
+
+umount /mnt/sd
+umount /var/mca
+umount /sys /proc
+#Switch to the new root and execute init
+
+
+exec switch_root /newroot "${init}"
+
+fi
+#This will only be run if the exec above failed
+echo "Failed to switch_root, dropping to a shell"
+exec sh
+

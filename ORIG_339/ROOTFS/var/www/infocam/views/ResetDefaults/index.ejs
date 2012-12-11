@@ -1,0 +1,48 @@
+<div class="contCuerpo">
+	<div class="cuerpoTop"></div>
+	<div class="cuerpo"><strong>System</strong>
+		<div class="cuerpolinea"></div>
+		<div class="cuerpoizq">
+			<ul>
+				<li><a href="/infocam/ChangePassword" title="Change Admin Password" class="V1N">Change Admin Password</a></li>
+				<li><a href="/infocam/ResetDefaults" title="Reset Defaults" class="V1N">Reset Defaults</a></li>
+				<li><a href="/infocam/Upgrade" title="Upgrade" class="V1N">Upgrade</a></li>
+			</ul>	
+		</div>
+		<form method="post" name="defaults" action="/infocam/ResetDefaults/Save/" onsubmit="doWarning()">
+			<div class="cuerpoder V1N">
+				<p><strong>Application defaults</strong></p>
+				<p>Resets system password and Card Sharing settings.</p>
+				<div class="clear"></div>
+				<div class="txtform V1N"></div>
+				<div class="campoform">
+					<input type="submit" name="save" id="save" value="Application Defaults" />
+				</div><div class="clear"></div>
+				
+				<p><strong>Factory defaults</strong></p>
+				<p>Resets both application and network/email settings.</p>
+				<div class="clear"></div>
+				<div class="txtform V1N"></div>
+				<div class="campoform">
+					<input type="submit" name="save" id="save" value="Factory Defaults" />
+				</div><div class="clear"></div>
+				
+				<p><strong>@@resultMessage</strong></p>
+				
+			</div>
+		</form>
+		<div class="clear"></div>
+	</div>
+
+	<div class="cuerpoBot"></div>
+</div>
+
+<script type="text/javascript">
+<!--
+
+function doWarning(){
+	alert("Network connectivity may be lost. If you are not properly redirected check configuration in Common Interface.");
+}
+
+//-->
+</script>

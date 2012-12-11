@@ -1,0 +1,162 @@
+#!/bin/sh
+
+if [ ! -x /sbin/ifconfig ]
+then
+    echo "/sbin/ifconfig missing, unable to configure the network"
+    exit 0
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    if [ -f /etc/sysctl.conf -a -x /sbin/sysctl ]
+    then
+        echo "Running sysctl"
+        sysctl -p /etc/sysctl.conf >/dev/null 2>&1
+    fi
+
+    echo "Setting up networking on loopback device: "
+    ifconfig lo 127.0.0.1
+    route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+    # remove the nameserver file
+    rm -f /etc/resolv.conf
+
+    #
+    # set up the network interfaces
+    #
+    if [ "$IPADDR0" = "" ]
+    then
+        echo ""
+        echo "Warning: no IPADDR is set, please set this from the ltib"
+        echo "config screen, or directly in /etc/rc.d/rc.conf."
+        echo "IP address setup bypassed"
+        echo ""
+        sleep 2
+    fi
+
+    # if rootfs is mounted via NFS, DEPLOYMENT_STYLE is NFS regardless
+    # whether LTIB built it for JFFS2.
+    if grep -q 'root=/dev/nfs' /proc/cmdline
+    then
+        DEPLOYMENT_STYLE=NFS;
+    fi
+
+
+    if [ "$SYSCFG_IFACE0" = "y" ]
+    then
+        echo "Setting up networking on $INTERFACE0: "
+        if [ "$IPADDR0" = "dhcp" ]
+        then
+            if [ "$DEPLOYMENT_STYLE" = "NFS" ]
+            then
+                if [ -f /proc/net/pnp ]
+                then
+                    grep nameserver /proc/net/pnp > /etc/resolv.conf
+                else
+                    echo "You need to manually set your nameserver in /etc/resolv.conf"
+                fi
+            else
+                $SYSCFG_DHCPC_CMD $INTERFACE0
+            fi
+        else  
+            # non-dhcp network startup
+            ifconfig $INTERFACE0 $IPADDR0 netmask $NETMASK0
+            sed -e 's,.*hostname,'$IPADDR0'     '`hostname`',' /etc/hosts >/tmp/hosts
+            mv /tmp/hosts /etc/hosts
+
+            if [ -n "$GATEWAY0" ]
+            then 
+                echo "Adding static route for default gateway to $GATEWAY0: "
+                route add default gateway $GATEWAY0 $INTERFACE0
+                sed -e 's,.*gateway0,'$GATEWAY0'     gateway0,' /etc/hosts >/tmp/hosts
+                mv /tmp/hosts /etc/hosts
+            fi
+            if [ -n "$NAMESERVER0" ]
+            then
+                echo "Setting nameserver to $NAMESERVER0 in /etc/resolv.conf: "
+                echo "nameserver $NAMESERVER0" >> /etc/resolv.conf
+            fi
+        fi
+    fi
+    if [ "$SYSCFG_IFACE1" = "y" ]
+    then
+        echo "Setting up networking on $INTERFACE1: "
+        if [ "$IPADDR1" = "dhcp" ]
+        then
+            $SYSCFG_DHCPC_CMD $INTERFACE1
+        else  
+            # non-dhcp network startup
+            ifconfig $INTERFACE1 $IPADDR1 netmask $NETMASK1
+
+            if [ -n "$GATEWAY1" ]
+            then 
+                echo "Adding static route for default gateway to $GATEWAY1: "
+                route add default gateway $GATEWAY1 $INTERFACE1
+                sed -e 's,.*gateway1,'$GATEWAY1'     gateway1,' /etc/hosts >tmp/hosts
+                mv /tmp/hosts /etc/hosts
+            fi
+            if [ -n "$NAMESERVER1" ]
+            then
+                echo "Setting nameserver to $NAMESERVER1 in /etc/resolv.conf: "
+                echo "nameserver $NAMESERVER1" >> /etc/resolv.conf
+            fi
+        fi
+    fi
+    if [ "$SYSCFG_IFACE2" = "y" ]
+    then
+        echo "Setting up networking on $INTERFACE2: "
+        if [ "$IPADDR2" = "dhcp" ]
+        then
+            $SYSCFG_DHCPC_CMD $INTERFACE2
+        else  
+            # non-dhcp network startup
+            ifconfig $INTERFACE2 $IPADDR2 netmask $NETMASK2
+
+            if [ -n "$GATEWAY2" ]
+            then 
+                echo "Adding static route for default gateway to $GATEWAY2: "
+                route add default gateway $GATEWAY2 $INTERFACE2
+                sed -e 's,.*gateway2,'$GATEWAY2'     gateway2,' /etc/hosts >tmp/hosts
+                mv /tmp/hosts /etc/hosts
+            fi
+        fi
+    fi
+    if [ "$SYSCFG_IFACE3" = "y" ]
+    then
+        echo "Setting up networking on $INTERFACE3: "
+        if [ "$IPADDR3" = "dhcp" ]
+        then
+            $SYSCFG_DHCPC_CMD $INTERFACE3
+        else  
+            # non-dhcp network startup
+            ifconfig $INTERFACE3 $IPADDR3 netmask $NETMASK3
+
+            if [ -n "$GATEWAY3" ]
+            then 
+                echo "Adding static route for default gateway to $GATEWAY3: "
+                route add default gateway $GATEWAY3 $INTERFACE3
+                sed -e 's,.*gateway3,'$GATEWAY3'     gateway3,' /etc/hosts >tmp/hosts
+                mv /tmp/hosts /etc/hosts
+            fi
+        fi
+    fi
+    if [ "$SYSCFG_IFACE4" = "y" ]
+    then
+        echo "Setting up networking on $INTERFACE4: "
+        if [ "$IPADDR4" = "dhcp" ]
+        then
+            $SYSCFG_DHCPC_CMD $INTERFACE4
+        else  
+            # non-dhcp network startup
+            ifconfig $INTERFACE4 $IPADDR4 netmask $NETMASK4
+
+            if [ -n "$GATEWAY4" ]
+            then 
+                echo "Adding static route for default gateway to $GATEWAY4: "
+                route add default gateway $GATEWAY4 $INTERFACE4
+                sed -e 's,.*gateway4,'$GATEWAY4'     gateway4,' /etc/hosts >tmp/hosts
+                mv /tmp/hosts /etc/hosts
+            fi
+        fi
+    fi
+fi

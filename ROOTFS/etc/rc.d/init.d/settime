@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ ! -x /sbin/hwclock ]
+then
+    exit 0
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then
+    if [ -x /sbin/hwclock ]
+    then
+        echo "Syncing hardware clock to system time"
+        /sbin/hwclock -w
+    fi
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    if [ -x /bin/ntpclient -a "$NTP_SERVER" ]
+    then
+        echo "Setting time from ntp server: $NTP_SERVER"
+        /bin/ntpclient -s -c 2 -i 3 -h $NTP_SERVER >/dev/null
+    else
+        if [ ! -f /etc/setttime_msg ]
+        then
+            echo "Please set the system time using"
+            echo "    date <mmddhhmnyyyy>"
+            echo "    /sbin/hwclock -w"
+            touch /etc/setttime_msg
+            sleep 2
+        fi
+    fi
+fi

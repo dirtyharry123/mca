@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ ! -x /usr/sbin/sshd ]
+then
+    exit 0
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then
+    echo "Stopping the ssh server: "
+    killall sshd
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    # assume if one key is missing, all are
+    if [ ! -f /etc/ssh/ssh_host_key ]
+    then
+        echo "Generating keys for the ssh server: "
+        ssh-keygen -q -t rsa1 -f /etc/ssh/ssh_host_key  -C '' -N ''
+        ssh-keygen -q -t rsa -f /etc/ssh/ssh_host_rsa_key  -C '' -N ''
+        ssh-keygen -q -t dsa -f /etc/ssh/ssh_host_dsa_key  -C '' -N ''
+    fi
+    for i in ssh_host_key ssh_host_rsa_key ssh_host_dsa_key
+    do
+        chmod 600 /etc/ssh/$i
+    done
+    echo "Starting the ssh server: "
+    /usr/sbin/sshd
+fi
+

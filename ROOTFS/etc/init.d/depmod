@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ ! -x /sbin/depmod ]
+then
+    exit 0
+fi
+
+if [ "$1" = "start"  -a ! -s /lib/modules/`uname -r`/modules.dep ]
+then
+    echo Running depmod
+    /sbin/depmod -a
+fi
+

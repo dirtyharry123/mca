@@ -1,0 +1,83 @@
+#!/bin/sh
+
+# minimal startup script, will work with msh (this is best available in
+# MMUless format).
+
+# load the configuration information
+. /etc/rc.d/rc.conf
+mode=${1:-start}
+if [ $mode = "start" ]
+then
+    services=$cfg_services
+else
+    services=$cfg_services_r
+fi
+cfg_services=${2:-$services}
+
+# run the configured sequence
+for i in $cfg_services
+do
+    if [ -x /etc/rc.d/init.d/$i ]
+    then                                                                        
+        /etc/rc.d/init.d/$i $mode
+    fi                                                                          
+done 
+
+if [ $# -ge 2 ]
+then 
+    exit 0
+fi
+# show all kernel log messages
+#echo 8 >  /proc/sys/kernel/printk
+
+# run rc.local if present and executable
+if [ -x /etc/rc.d/rc.local ]
+then 
+    /etc/rc.d/rc.local $mode
+fi
+
+echo "MCA start"
+mdev -s
+
+
+date -s 2011.04.14-00:04
+rdate -s time.bora.net &
+rdate -s ntp-nist.ldsbc.edu &
+rdate -s wwv.nist.gov &
+
+mount -t jffs2 /dev/mtdblock5 /var/mca
+mount -t vfat /dev/mmcblk0p1 /tmp/sd
+
+
+
+#flash_eraseall /dev/mtd7
+#mount -t jffs2 /dev/mtdblock7 /b
+
+#mkdir a
+#mkdir b
+flash_eraseall /dev/mtd9
+mount -t jffs2 /dev/mtdblock9 /tmp/dn
+
+#telnetd -l /usr/bin/help -p 24
+#telnetd -l /bin/sh /usr/bin/help -p 24
+#telnetd -p /usr/bin/help -p 24
+
+insmod /mio.ko
+
+mkfifo -m 666 /tmp/mdbg
+mkfifo -m 666 /tmp/mdvbi
+mkfifo -m 666 /tmp/mflt
+mkfifo -m 666 /tmp/mdesc
+sync
+
+
+sleep 8
+
+
+mcam mca test &
+
+
+echo "MCA started"
+
+
+

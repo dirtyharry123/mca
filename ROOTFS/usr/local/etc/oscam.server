@@ -1,0 +1,9 @@
+[reader]
+label                         = oscam_server
+protocol                      = cs378x
+device                        = fritz.box,12001
+user                          = mca
+password                      = mca
+group                         = 1
+
+

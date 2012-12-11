@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "$1" = "start" ]
+then
+  echo "MCA start"
+  insmod /mio.ko
+  /mcai test&
+  echo "MCA started"
+fi

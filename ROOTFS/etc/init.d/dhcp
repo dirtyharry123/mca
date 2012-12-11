@@ -1,0 +1,57 @@
+#! /bin/sh
+
+# This file started as /etc/rc.d/init.d/S31dhcpd - Start/Stop the DHCP server
+# daemon(s).
+#
+
+# Comment out the following exit line to enable this script.
+# Before doing so, you need to edit the /etc/dhcpd.conf file.
+#exit 0
+
+KILLWAIT=3
+DAEMON="dhcpd"
+
+which ip
+if [ "$?" != "0" ]; then
+	echo "$0: Missing ip"
+	exit 1
+fi
+
+case "$1" in
+
+    start)
+	# Ensure $DHCP_ARG device is there
+	if ! ip link | grep -q $DHCP_ARG; then
+		echo "$0: Network interface $DHCP not present" >&2
+		exit 2
+	fi
+
+	echo "Starting ${DAEMON}"
+	${DAEMON} $DHCP_ARG
+	if [ "$?" = "0" ]; then echo "Done"
+	else                    echo "FAILED"; fi
+	sleep 1
+	;;
+
+    stop)
+	echo "Stopping ${DAEMON}"
+	killall ${DAEMON}
+	if [ "$?" = "0" ]; then echo "Done"
+	else                    echo "FAILED"; fi
+	;;
+
+    restart)
+	$0 stop
+	sleep 1
+	$0 start
+	;;
+
+    *)
+	echo "Usage: $0 (start|stop|restart)"
+	exit 1
+	;;
+
+esac
+
+exit 0
+

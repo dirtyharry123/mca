@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# pass in $2 for the interface, if not set, defaults to eth0
+
+if [ ! -x /usr/sbin/dhcpd ]
+then
+    exit 0
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then                                                                            
+    echo "Stopping the dhcp server: "
+    killall dhcpd
+fi
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    echo "Starting the dhcp server: "
+    /usr/sbin/dhcpd $2
+fi

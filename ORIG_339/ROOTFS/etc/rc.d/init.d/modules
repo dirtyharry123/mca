@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ "$1" = "start" -a -x /sbin/modprobe -a "$MODLIST" ]
+then
+    for i in $MODLIST
+    do
+        echo Loading module $i
+        modprobe $i
+    done
+fi

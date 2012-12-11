@@ -1,0 +1,19 @@
+#!/bin/sh
+
+case "$1" in
+  start)
+    echo -n "Starting SMB services: "
+    nmbd $NMBD_ARGS
+    sleep 1
+    smbd $SMBD_ARGS
+    ;;
+  stop)
+    echo -n "Shutting down SMB services: "
+    killall smbd
+    killall nmbd
+    ;;
+  *)
+    echo "Usage: smb {start|stop}"
+    exit 1
+esac
+

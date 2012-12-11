@@ -1,0 +1,75 @@
+<div class="contCuerpo">
+	<div class="cuerpoTop"></div>
+	<div class="cuerpo"><strong>Card Sharing</strong>
+		<div class="cuerpolinea"></div>
+		<div class="cuerpoizq">
+			<ul>
+				<li>Settings</li>
+			</ul>	
+		</div>
+		<form method="post" name="card" action="/infocam/CardSharing/Save/" onsubmit="return checkValues()">
+			<div class="cuerpoder V1N">
+				<p><strong>Status</strong></p>
+				<p>Serial Number: @@serialNumber</p>
+				<p>Status: @@CSstatus</p>
+				
+				<p><strong>Settings</strong></p>
+				<p>Please fill the following fields:</p>
+				<div class="txtform V1N">Bundle Key:</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="bundlekey" id="bundlekey" value="@@bundleKey" size="50"/>
+					</label>
+				</div><div class="clear"></div>
+				
+				<div class="txtform V1N">Registration Key:</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="regkey" id="regkey" value="@@regKey" size="50"/>
+					</label>
+				</div><div class="clear"></div>
+				
+				<div class="txtform V1N">Server Address:</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="server" id="server" value="@@serverAddress" size="50"/>
+					</label>
+				</div><div class="clear"></div>
+
+				<div class="txtform V1N"></div>
+				<div class="campoform">
+					<input type="submit" name="save" id="save" value="Save" />
+				</div><div class="clear"></div>
+				
+				<p><strong>@@resultMessage</strong></p>
+				
+			</div>
+		</form>
+		<div class="clear"></div>
+	</div>
+	<div class="cuerpoBot"></div>
+</div>
+
+<script type="text/javascript">
+<!--
+
+function checkValues(){
+	var invalid = " ";
+	var minLength = 10;
+
+	if (document.card.bundlekey.value.length < minLength ||
+		document.card.regkey.value.length < minLength) {
+		alert('The keys length must be at least ' + minLength + ' characters long. Try again.');
+		return false;
+	}
+	if (document.card.bundleKey.value.indexOf(invalid) > -1 ||
+	    document.card.regkey.value.indexOf(invalid) > -1 ||
+		document.card.server.value.indexOf(invalid) > -1) {
+		alert("Sorry, spaces are not allowed.");
+		return false;
+	}
+	return true;
+}
+
+//-->
+</script>

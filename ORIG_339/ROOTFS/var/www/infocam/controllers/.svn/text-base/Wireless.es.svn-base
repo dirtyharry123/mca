@@ -1,0 +1,58 @@
+
+public class WirelessController extends BaseController {
+
+	public var localSSID: String = ""
+	public var localPassword: String = ""
+
+	public var noEncStatus: String = ""
+	public var WEPEncStatus: String = ""
+	public var WPAEncStatus: String = ""
+	public var WPA2EncStatus: String = ""
+
+	public var resultMessage: String = ""
+
+	function WirelessController() {
+	}
+
+	use namespace action
+
+
+	action function index() {
+		//TODO: Retrieve values from linux
+
+		localSSID = "DEMO_SSID"
+		localPassword = "DEMO_PASSWORD"
+		WEPEncStatus = "selected"
+	}
+
+	action function Save() {
+		localSSID = params.ssid
+		localPassword = params.password
+
+		noEncStatus = ""
+		WEPEncStatus = ""
+		WPAEncStatus = ""
+		WPA2EncStatus = ""
+		
+		if (params.encryption == "None"){
+			noEncStatus = "selected"
+		}
+		else if (params.encryption == "WEP"){
+			WEPEncStatus = "selected"
+		}
+		else if (params.encryption == "WPA"){
+			WPAEncStatus = "selected"
+		}
+		else if (params.encryption == "WPA2"){
+			WPA2EncStatus = "selected"
+		}
+		
+		result = Cmd.sh("echo Wireless >> /tmp/infocam.log")
+		result = Cmd.sh("echo SSID: " + localSSID + " >> /tmp/infocam.log")
+		result = Cmd.sh("echo password: " + localPassword + " >> /tmp/infocam.log")
+		result = Cmd.sh("echo encryption: " + params.encryption + " >> /tmp/infocam.log")
+		result = Cmd.sh("echo >> /tmp/infocam.log")
+
+		redirect("/infocam/")
+	}
+}

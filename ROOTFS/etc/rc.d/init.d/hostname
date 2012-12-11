@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ "$1" = "start" ]
+then
+    if [ -x /bin/hostname -o -x /usr/bin/hostname ]
+    then
+        echo Setting the hostname to $HOSTNAME
+        hostname $HOSTNAME
+    fi
+fi

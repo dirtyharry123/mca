@@ -1,0 +1,57 @@
+#!/bin/sh
+
+if [ "$1" = "stop" ]
+then
+    echo Unmounting filesystems
+    umount -a -r
+    mount -o remount -r %root% /
+    [ -x /sbin/swapoff ] && swapoff -a
+fi
+
+if [ "$1" = "start" ]
+then
+    echo Mounting filesystems
+    if [ "$TMPFS" = "tmpfs" ]
+    then
+        mount -n -t $TMPFS shm /dev/shm
+    fi
+    if [ -n "$TMPFS" ]
+    then
+        mount -n -t $TMPFS rwfs /mnt/rwfs -o size=$TMPFS_SIZE
+    fi
+    if [ "$READONLY_FS" != "y" ]
+    then
+        mount -n -o remount -w %root% /
+        NFSBOOT="`cat /proc/cmdline | grep -q /dev/nfs ; echo $?`"
+        if [ "$NFSBOOT" == "0"  -a  -n "$RAMDIRS" ]
+        then
+            echo "Booted NFS, not relocating: $RAMDIRS"
+            RAMDIRS=""
+        fi
+    else
+        # initramfs, ramdisks, others? come up read/write by default
+        mount -n -o remount -r %root% /
+        RAMDIRS="$RAMDIRS /tmp /etc /var"
+    fi
+    if [ -n "$RAMDIRS" ]
+    then
+        for i in $RAMDIRS
+        do
+            if [ ! -e /mnt/rwfs/$i ]
+            then
+                cp -a $i /mnt/rwfs/
+                mount -n -o bind /mnt/rwfs/$i $i
+            fi
+        done
+    fi
+    if [ -e /etc/mtab ]
+    then
+        rm -f /etc/mtab
+    fi
+    ln -s /proc/mounts /etc/mtab
+    if [ ! -d /dev/pts ]
+    then
+        mkdir /dev/pts
+    fi
+    mount -a
+fi

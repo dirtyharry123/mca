@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers
+END
+Base.es
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/Base.es
+END
+ResetDefaults.es
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/infocam/!svn/ver/29/trunk/infocam/controllers/ResetDefaults.es
+END
+ChangePassword.mod
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/ChangePassword.mod
+END
+Base.mod
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/Base.mod
+END
+ResetDefaults.mod
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/ResetDefaults.mod
+END
+System.es
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/infocam/!svn/ver/28/trunk/infocam/controllers/System.es
+END
+CardSharing.es
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/infocam/!svn/ver/29/trunk/infocam/controllers/CardSharing.es
+END
+Email.es
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/infocam/!svn/ver/29/trunk/infocam/controllers/Email.es
+END
+Upgrade.es
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/infocam/!svn/ver/22/trunk/infocam/controllers/Upgrade.es
+END
+Network.es
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/infocam/!svn/ver/29/trunk/infocam/controllers/Network.es
+END
+System.mod
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/System.mod
+END
+Wireless.es
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/infocam/!svn/ver/22/trunk/infocam/controllers/Wireless.es
+END
+CardSharing.mod
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/CardSharing.mod
+END
+Email.mod
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/Email.mod
+END
+Upgrade.mod
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/Upgrade.mod
+END
+Network.mod
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/Network.mod
+END
+Wireless.mod
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/infocam/!svn/ver/18/trunk/infocam/controllers/Wireless.mod
+END
+ChangePassword.es
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/infocam/!svn/ver/28/trunk/infocam/controllers/ChangePassword.es
+END

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    echo "Mounting /proc and /sys "
+    mount -n -t proc proc /proc
+    mount -n -t sysfs sys /sys
+fi

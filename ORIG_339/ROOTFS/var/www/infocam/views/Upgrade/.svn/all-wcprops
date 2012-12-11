@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/infocam/!svn/ver/18/trunk/infocam/views/Upgrade
+END
+index.mod
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/infocam/!svn/ver/18/trunk/infocam/views/Upgrade/index.mod
+END
+index.ejs
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/infocam/!svn/ver/29/trunk/infocam/views/Upgrade/index.ejs
+END

@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/infocam/!svn/ver/18/trunk/infocam/views/Email
+END
+index.mod
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/infocam/!svn/ver/18/trunk/infocam/views/Email/index.mod
+END
+index.ejs
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/infocam/!svn/ver/29/trunk/infocam/views/Email/index.ejs
+END

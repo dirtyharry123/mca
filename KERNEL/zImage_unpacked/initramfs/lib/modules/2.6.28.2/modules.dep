@@ -1,0 +1,14 @@
+/lib/modules/2.6.28.2/kernel/crypto/ecb.ko: 
+/lib/modules/2.6.28.2/kernel/net/wireless/cfg80211.ko: 
+/lib/modules/2.6.28.2/kernel/drivers/usb/gadget/lpc313x_udc.ko: 
+/lib/modules/2.6.28.2/kernel/drivers/usb/gadget/g_file_storage.ko: /lib/modules/2.6.28.2/kernel/drivers/usb/gadget/lpc313x_udc.ko
+/lib/modules/2.6.28.2/kernel/net/ieee80211/ieee80211_crypt.ko: 
+/lib/modules/2.6.28.2/kernel/drivers/usb/gadget/g_ether.ko: /lib/modules/2.6.28.2/kernel/drivers/usb/gadget/lpc313x_udc.ko
+/lib/modules/2.6.28.2/kernel/net/ieee80211/ieee80211_crypt_wep.ko: /lib/modules/2.6.28.2/kernel/net/ieee80211/ieee80211_crypt.ko
+/lib/modules/2.6.28.2/kernel/crypto/arc4.ko: 
+/lib/modules/2.6.28.2/kernel/drivers/uio/uio_pdrv_genirq.ko: /lib/modules/2.6.28.2/kernel/drivers/uio/uio.ko
+/lib/modules/2.6.28.2/kernel/net/mac80211/mac80211.ko: /lib/modules/2.6.28.2/kernel/net/wireless/cfg80211.ko
+/lib/modules/2.6.28.2/kernel/net/ieee80211/ieee80211.ko: /lib/modules/2.6.28.2/kernel/net/ieee80211/ieee80211_crypt.ko
+/lib/modules/2.6.28.2/kernel/drivers/uio/uio.ko: 
+/lib/modules/2.6.28.2/misc/modexample.ko: 
+/lib/modules/2.6.28.2/kernel/drivers/scsi/scsi_wait_scan.ko: 

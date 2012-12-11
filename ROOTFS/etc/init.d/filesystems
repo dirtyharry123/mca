@@ -1,0 +1,58 @@
+#!/bin/sh
+
+getcfgitem()
+{
+  grep "$1" /var/mca/mca.ini | grep "$2" > /dev/null 2>&1
+
+  if [ $? -eq 0 ]; then
+    return 1
+  else
+    return 0
+  fi
+}
+
+getcfgitem nandtest yes
+testnand=$?
+
+
+if [ "$1" = "stop" ]
+then
+    echo Unmounting filesystems
+    umount -a -r
+    mount -o remount -r %root% /
+    [ -x /sbin/swapoff ] && swapoff -a
+fi
+
+if [ "$1" = "start" ]
+then
+    echo "Mounting filesystems"
+    
+    if [ "$TMPFS" = "tmpfs" ]
+    then
+        echo "Mounting /dev/shm"
+        mkdir -p /dev/shm
+        mount -n -t $TMPFS shm /dev/shm
+    fi
+        
+    echo "Mount /tmp/dn"
+    mount -t jffs2 /dev/mtdblock9 /tmp/dn
+    if [ $? -ne 0 ]; then
+      echo "Repair /tmp/dn partition /dev/mtd9"
+      if [ $testnand -eq 1 ]; then 
+        nandtest -k -m /dev/mtd9
+      fi
+      flash_eraseall /dev/mtd9
+      mount -t jffs2 /dev/mtdblock9 /tmp/dn
+      echo "Flash erased..." > /tmp/dn/info 
+    else
+      echo "Clean /tmp/dn partition /dev/mtd9"
+      rm -rf /tmp/dn/*
+      echo "Flash cleand..." > /tmp/dn/info
+    fi
+        
+    if [ -e /etc/mtab ]
+    then
+        rm -f /etc/mtab
+    fi
+    ln -s /proc/mounts /etc/mtab
+fi

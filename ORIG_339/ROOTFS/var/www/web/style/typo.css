@@ -1,0 +1,183 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	/*font-size:62.5%;*/
+}
+/********* Texto Azul *************/
+h1 {
+	margin-top:0px;
+	margin-bottom:20px;
+	font-family:  Arial, Helvetica, sans-serif; 
+	font-size:18px; 
+	color: #0052AD;  
+	text-decoration: none;
+}
+h2 {
+	margin-top:40px;
+	margin-bottom:18px;
+	font-family:  Arial, Helvetica, sans-serif; 
+	font-size:14px; 
+	color: #03acd6;  
+	text-decoration: none;
+}
+h4 {
+	margin-top:10px;
+	margin-bottom:0px;
+}
+.V1A, a .V1A, a .V1A:active, a .V1A:visited, .V1A a, .V1A a:active, .V1A a:visited{
+	/*font:verdana, arial;*/
+	font-family:  Arial, Helvetica, sans-serif;
+	/*color:#0067C6;*/
+	color:#555555;
+	text-decoration:none;
+	font-size:12px;
+}
+a .V1A:hover, .V1A a:hover{
+	color:#2183dd; 
+	text-decoration:underline;
+}
+
+.V2A, a .V2A, a.V2A:visited, a .V2A:active {
+	font-family:  Arial, Helvetica, sans-serif;
+	font-size:14px;
+	color: #0052AD;
+	text-decoration: none;
+}
+a.V2A:hover {
+	color: #0052AD; 
+	text-decoration:underline;
+}
+
+.V3A, a .V3A, a.V3A:visited, a .V3A:active {
+	font-family:  Arial, Helvetica, sans-serif;
+	font-size:18px;
+	color: #000000;
+	text-decoration: none;
+}
+a.V3A:hover {
+	color: #000000; 
+	text-decoration:underline;
+}
+/************** Texto azul botones de contacto ******************/
+
+.V1AZ {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#142f6e;
+	text-decoration:none;
+}
+
+/************* Texto blanco ***********/
+.V1W, a .V1W, a.V1W:visited, a .V1W:active {
+	font-family:  Arial, Helvetica, sans-serif;
+	font-size:10px; 
+	color: #FFF; 
+	text-decoration: none;
+}
+a.V1W:hover {
+	color: #c0c0c0; 
+	text-decoration:underline;
+}
+/************* Texto gris***********/
+.V1G, a .V1G, a.V1G:visited, a .V1G:active {
+	font-family:  Arial, Helvetica, sans-serif;
+	font-size:14px; 
+	color:#333;
+	text-decoration: none;
+}
+a.V1G:hover {
+	color: #454545; 
+	text-decoration:underline;
+}
+.V2G {
+	font-family:  Arial, Helvetica, sans-serif;
+	font-size:12px; 
+	color: #595959; 
+	text-decoration: none;
+}
+.V3G {
+	font-family:  Arial, Helvetica, sans-serif;
+	font-size:13px; 
+	color: #565656; 
+	text-decoration: none;
+}
+/************ texto negro ***********/
+.V1N, a.V1N, a.V1N:active, a.V1N:visited{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:14px;
+	color:#000;
+	text-decoration: none;
+	/*line-height: 15px;*/
+}
+a.V1N:hover{
+	color:#666;
+	text-decoration:underline;
+}
+
+/********** Formato de texto *******/
+.V1W, a .V1W, a .V1W:active, a .V1W:visited, .V1W a, .V1W a:active, .V1W a:visited {
+	font-family:  Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color:#fff;
+	text-decoration: none;
+	/*line-height: 15px;*/
+}
+a .V1W, a .V1W:active, a .V1W:visited, .V1W a, .V1W a:active, .V1W a:visited {
+	color:#fff;
+}
+a .V1W:hover, .V1W a:hover{
+	color:#fff;
+}
+
+.centrarTexto{
+	text-align:center;
+}
+.textoIzquierda{
+	text-align:left;
+}
+.textoDerecha{
+	text-align:right;
+}
+.textoJustificar{
+	text-align:justify;
+}
+.rojo{
+}
+.azul{
+}
+.blanco{
+	color:white;!important
+}
+.textoGrande{
+	font-size:18px;!important
+}
+.textoEnorme{
+	font-size:28px;!important
+}
+.sombra{
+	text-shadow:#333 1px 2px 2px;
+}
+.margenBottom20{
+	margin-bottom:20px;
+}
+.margenBottom30{
+	margin-bottom:30px;
+}
+.margenLeft10{
+	margin-left:10px;
+}
+.margenLeft20{
+	margin-left:20px;
+}
+.ancho60{
+	width:60px;!important
+}
+.ancho100{
+	width:100px;!important
+}
+/**********************************/
+.link{
+	text-decoration:none;
+}

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ ! -x /usr/sbin/dropbear ]
+then
+    exit 0
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then                                                                            
+    echo "Stopping the dropbear ssh server: "
+    killall dropbear
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]                                       
+then
+    if [ ! -f /etc/dropbear/dropbear_rsa_host_key ]
+    then
+       echo "Generating keys for the dropbear ssh server: "
+       mkdir -p /etc/dropbear
+       dropbearkey -t rsa -f /etc/dropbear/dropbear_rsa_host_key
+    fi
+    echo "Starting the dropbear ssh server: "
+    /usr/sbin/dropbear $DROPBEAR_ARGS
+fi

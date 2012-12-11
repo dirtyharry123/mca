@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ ! -x /usr/sbin/inetd ]
+then
+    exit 0
+fi
+
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then                                                                            
+    echo "Stopping inetd: "
+    killall inetd
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+    echo "Starting inetd: "
+    /usr/sbin/inetd $INETD_ARGS
+fi
+

@@ -1,0 +1,86 @@
+<div class="contCuerpo">
+	<div class="cuerpoTop"></div>
+	<div class="cuerpo"><strong>Wireless</strong>
+		<div class="cuerpolinea"></div>
+		<div class="cuerpoizq">
+			<ul>
+				<li>Settings</li>
+			</ul>	
+		</div>
+		<form method="post" name="wireless" action="/infocam/Wireless/Save/" onsubmit="return checkValues()">
+			<div class="cuerpoder V1N">
+				<p><strong>Settings</strong></p>
+				<p>Please complete the following fields:</p>
+				
+				<div class="txtform V1N">SSID</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="ssid" id="ssid" value="@@localSSID"/>
+					</label>
+				</div><div class="clear"></div>
+				
+				<div class="txtform V1N">Password</div>
+				<div class="campoform">
+					<input type="password" name="password" id="password" value="@@localPassword"/>
+				</div><div class="clear"></div>
+				
+				<div class="txtform V1N">Key Index</div>
+				<div class="campoform V1N">
+					<label>
+						<select name="keyindex" id="keyindex">
+							<option value="0" @@keyIndex0>0</option>
+							<option value="1" @@keyIndex1>1</option>
+							<option value="2" @@keyIndex2>2</option>
+							<option value="3" @@keyIndex3>3</option>
+						</select>
+					</label>
+				</div><div class="clear"></div>
+				
+				<div class="txtform V1N">Encryption</div>
+				<div class="campoform V1N">
+					<label>
+						<select name="encryption" id="encryption">
+							<option value="None" @@noEncStatus>None</option>
+							<option value="WEP" @@WEPEncStatus>WEP</option>
+							<option value="WPA" @@WPAEncStatus>WPA</option>
+							<option value="WPA2" @@WPA2EncStatus>WPA2</option>
+						</select>
+					</label>
+				</div><div class="clear"></div>
+				
+				<div class="txtform V1N"></div>
+				<div class="campoform">
+					<input type="submit" name="save" id="save" value="Save" />
+				</div><div class="clear"></div>
+				
+				<p><strong>@@resultMessage</strong></p>
+				
+			</div>
+		</form>
+		<div class="clear"></div>
+	</div>
+
+	<div class="cuerpoBot"></div>
+</div>
+
+<script type="text/javascript">
+<!--
+function checkValues()
+{
+	if (document.wireless.ssid.value.length == 0){
+		alert("SSID required.")
+		return false;
+	}
+	else if (document.wireless.encryption.value != "None" &&
+			 document.wireless.password.value.length == 0){
+		alert("Password required for the selected encryption type.")
+		return false;
+	} 
+	else{
+		alert("You will be redirected after changes take effect. If any connectivity issue is found, check settings in Common Interface.")
+		return true;
+	}
+}
+
+//-->
+</script>

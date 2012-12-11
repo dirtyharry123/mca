@@ -1,0 +1,18 @@
+case "$1" in
+    start)
+      insmod /mio.ko
+      mcai test&
+  ;;
+    stop)
+  ;;
+    restart)
+  ;;
+    status)
+  ;;
+    *)
+      echo "Usage: god {start|stop|restart|status}"
+      exit 1
+  ;;
+esac
+
+exit $RETVAL

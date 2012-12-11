@@ -1,0 +1,7 @@
+
+connectors: {
+    table: "html",
+    chart: "google",
+    rest: "html",
+},
+

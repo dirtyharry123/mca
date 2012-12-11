@@ -1,0 +1,12 @@
+
+debug: {
+    command: 'ajsc --lang fixed --debug --optimize 9 --web ',
+},
+
+test: {
+    command: 'ajsc --lang fixed --debug --optimize 9 --web ',
+},
+
+production: {
+    command: 'ajsc --lang fixed --optimize 9 --web ',
+},

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "Content-type: text/html
+
+
+<html>
+<head>
+    <title>CGI test</TITLE>
+</head>
+<h1> CGI test example </h1>
+</body>
+</html>
+"

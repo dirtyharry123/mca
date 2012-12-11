@@ -1,0 +1,156 @@
+<div class="contCuerpo">
+	<div class="cuerpoTop"></div>
+	<div class="cuerpo">
+		<strong>E-mail</strong>
+		<div class="cuerpolinea"></div>
+		<div class="cuerpoizq">
+			<ul>
+				<li>Settings</li>
+			</ul>	
+		</div>
+		<form method="post" name="email" action="/infocam/Email/Save/" onsubmit="return checkValues()">
+			<div class="cuerpoder V1N">
+				<p><strong>Settings</strong></p>
+				<p>Please fill the following fields:</p>
+				
+				<div class="txtform V1N">POP Server</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="server" id="server" value="@@localServer"/>
+					</label>
+				</div>
+
+				<div class="clear"></div>
+				<div class="txtform V1N">Port</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="serverport" id="port" value="@@localPort"/>
+					</label>
+
+				</div>
+				
+				<div class="clear"></div>
+				<div class="txtform V1N">E-mail address</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="email" id="email" value="@@localEmail"/>
+					</label>
+				</div>
+
+				<div class="clear"></div>				
+				<div class="txtform V1N">User</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="text" name="user" id="user" value="@@localUser"/>
+					</label>
+
+				</div>
+
+				<div class="clear"></div>
+				<div class="txtform V1N">Password</div>
+				<div class="campoform V1N">
+					<label>
+						<input type="password" name="password" id="password" value="@@localPassword"/>
+					</label>
+
+				</div>
+
+				<div class="clear"></div>
+				<div class="txtform V1N">Check Time</div>
+				<div class="campoform V1N">
+					<label>
+						<select name="check" id="check">
+							<option value="0" @@min5Status>5 min</option>
+							<option value="1" @@min15Status>15 min</option>
+							<option value="2" @@min30Status>30 min</option>
+							<option value="3" @@day1Status>1 Day</option>
+						</select>
+					</label>
+				</div>
+
+				<div class="clear"></div>
+				<div class="txtform V1N"></div>
+				<div class="campoform V1N">
+					<input type="submit" name="save" id="save" value="Save" />
+				</div>
+				<div class="clear"></div>
+				
+				<p><strong>@@resultMessage</strong></p>
+				
+			</div>
+		</form>
+		<div class="clear"></div>
+	</div>
+
+	<div class="cuerpoBot"></div>
+</div>
+
+<script type="text/javascript">
+<!--
+
+function checkValues()
+{
+	invalid = " "
+	emailRegExp = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+
+	//Server address
+	str = document.email.server.value
+	if (str == ''){
+		alert("Bad server address.");
+		return false;
+	}
+	if (str.indexOf(invalid) > -1) {
+		alert("Spaces are not allowed.");
+		return false;
+	}
+	
+	//Port
+	str = document.email.port.value
+	if (str == '')
+		document.email.port.value = "25"
+	else{
+		n = parseInt(str,10)
+		if (isNaN(n) || n <= 0){
+			alert("Bad port value.");
+			return false;
+		}
+	} 
+	
+	//Email Address
+	str = document.email.email.value
+	if (str == ''){
+		alert("Bad email address.");
+		return false;
+	}
+	if (!emailRegExp.test(str)){
+		alert("Bad Email format.");
+		return false;
+	}
+	
+	//User
+	str = document.email.user.value
+	if (str == ''){
+		alert("Bad user name value.");
+		return false;
+	}
+	if (str.indexOf(invalid) > -1) {
+		alert("Spaces are not allowed.");
+		return false;
+	}
+	
+	//Password
+	str = document.email.user.value
+	if (str == ''){
+		alert("Bad password value.");
+		return false;
+	}
+	if (str.indexOf(invalid) > -1) {
+		alert("Spaces are not allowed.");
+		return false;
+	}
+	
+	return true;
+}
+
+//-->
+</script>

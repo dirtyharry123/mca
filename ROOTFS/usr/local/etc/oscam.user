@@ -1,0 +1,6 @@
+[account]
+user                          = dvbapi
+pwd                           = 
+group                         = 1
+au                            = oscam_server
+
