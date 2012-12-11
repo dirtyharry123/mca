@@ -530,7 +530,7 @@ previous unpack has been done."
                             cpio="cpio"
                         fi
                         for ftime in "" "-a" "-m"; do
-                            find "$ramfs_dir" -exec touch $ftime -d @0 {} \;
+                            find "$ramfs_dir" -exec touch $ftime -h -d @0 {} \;
                         done
                         rqd gen_initramfs_list.sh -u squash -g squash "$ramfs_dir" > "$packing/$ramfs_list"
                         cp "$packing/$ramfs_list" "$packing/$ramfs_list.orig"
