@@ -2,7 +2,7 @@ ROOT_DIR:= $(PWD)
 MKJFFS2:=/usr/sbin/mkfs.jffs2
 MKVFAT:=/sbin/mkfs.vfat
 
-# These aren't created by make, but are needed
+# These files and directories need to exist
 APEX_FLASH:=APEX/apex_flash.bin
 APEX_SD:=APEX/apex_sd.bin
 INITRAMFS:=KERNEL/zImage_unpacked/initramfs
@@ -54,7 +54,6 @@ $(SD_FAT): $(JFFS2) $(MCA_CARD)
 .PHONY: image
 image:  $(FULL_IMG)
 $(FULL_IMG): $(SD_FAT) $(APEX_SD) $(SD_MBR)
-	#dd if=/dev/zero of=$(FULL_IMG) bs=512 count=80103
 	dd if=/dev/zero of=$(FULL_IMG) bs=512 count=126852
 	dd if=$(SD_MBR) of=$(FULL_IMG) bs=512 conv=notrunc
 	dd if=$(APEX_SD) of=$(FULL_IMG) bs=512 seek=62 conv=notrunc
