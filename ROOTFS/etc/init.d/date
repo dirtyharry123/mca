@@ -3,8 +3,11 @@
 if [ "$1" = "start" -o "$1" = "restart" ]
 then
     echo "Get Date from internet time servers"
-    rdate -s 0.de.pool.ntp.org &
-    rdate -s 1.de.pool.ntp.org &
-    rdate -s 2.de.pool.ntp.org &
+    #rdate -s 0.de.pool.ntp.org &
+    #rdate -s 1.de.pool.ntp.org &
+    #rdate -s 2.de.pool.ntp.org &
+    ntpd -q -p 0.de.pool.ntp.org &
+    ntpd -q -p 1.de.pool.ntp.org &
+    ntpd -q -p 2.de.pool.ntp.org &
 fi
 

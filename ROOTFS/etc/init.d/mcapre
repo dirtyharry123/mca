@@ -17,9 +17,9 @@ then
   echo -n "Set pseudodate... "
   # System Datum setzen, zumindest auf was neuers,
   # als die Zeitstempel der compilierten Programme
-  #OSCAM=/oscam
-  #STAT=`busybox stat -L -c %Y $OSCAM`
-  #date -s "1970-01-01 01:00:$STAT"
-  date -s 2012.09.26-10:00
+  OSCAM=/oscam
+  STAT=`busybox stat -L -c %Y $OSCAM`
+  date -s "1970-01-01 01:00:$STAT"
+  #date -s 2012.09.26-10:00
 fi
 

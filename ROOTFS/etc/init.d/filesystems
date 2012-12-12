@@ -39,7 +39,7 @@ then
     if [ $? -ne 0 ]; then
       echo "Repair /tmp/dn partition /dev/mtd9"
       if [ $testnand -eq 1 ]; then 
-        nandtest -k -m /dev/mtd9
+        nandtest -m /dev/mtd9
       fi
       flash_eraseall /dev/mtd9
       mount -t jffs2 /dev/mtdblock9 /tmp/dn

@@ -23,12 +23,18 @@ echo "Mount /dev/mtd5 as /var/mca"
 mount -t jffs2  /dev/mtdblock5 /var/mca
 if [ $? -ne 0 ]; then
   echo "Repair /var/mca partition (/dev/mtd5)"
-  if [ $testnand -eq 1 ]; then 
     nandtest -k -m /dev/mtd5
-  fi
-    flash_eraseall /dev/mtd5
     mount -t jffs2 /dev/mtdblock5 /var/mca 
+    if [ $? -ne 0 ]; then
+        flash_eraseall /dev/mtd5
+        mount -t jffs2 /dev/mtdblock5 /var/mca 
+        #We need some default configuration here, without configuration MCA will drop to a shell
+        cp /mca_default.ini /var/mca/mca.ini
+        cp /mca_default.ini /var/mca/default.ini
+        echo "install" > /var/mca/install
+    fi
 fi
+
 
 echo "Insert Kernel IO Module mega_io"
 insmod /etc/mega_io.ko
@@ -132,8 +138,6 @@ else
   mcai ini
 fi
 
-
-
 if [ "$upgrade" = "yes" ]; then
   boot_config_file="/var/mca/mca.ini"
 else
@@ -199,16 +203,6 @@ if [ "$upgrade" = "yes" ]; then
   echo "Erase flash partition BASE (mtd6)" 
   flash_eraseall /dev/mtd6
 
-  if [ $keepconfig -eq 0 ]; then
-    if [ $testnand -eq 1 ]; then
-      echo "Nandtest /dev/mtd5 ..."
-      nandtest -m /dev/mtd5
-    fi
-
-    echo "Erase Configuration (/dev/mtd5)"
-    flash_eraseall /dev/mtd5
-  fi
-
   sync
   echo "Write rootfs to flash"
   nandwrite /dev/mtd6 /mnt/sd/rootfs.jffs2
@@ -223,6 +217,7 @@ else
 #     flash_eraseall /dev/mtd5
       
       if [ $keepconfig -eq 0 ]; then
+        umount /dev/mtdblock5
         if [ $testnand -eq 1 ]; then
           echo "Nandtest /dev/mtd5 ..."
           nandtest -m /dev/mtd5
@@ -230,6 +225,9 @@ else
 
         echo "Erase Configuration (/dev/mtd5)"
         flash_eraseall /dev/mtd5
+        mount -t jffs2  /dev/mtdblock5 /var/mca
+        cp $boot_config_file /var/mca/mca.ini
+        cp $boot_config_file /var/mca/default.ini
       fi
 
       if [ "$bootselect" = "master" ]; then 
@@ -317,8 +315,6 @@ case "$(mcai GET BOOT_SELECT)" in
      mount -t jffs2 /dev/mtdblock8 /newroot
    ;;
 esac
-
-
 
 #Check if $init exists and is executable
 echo "Init: ${init}"

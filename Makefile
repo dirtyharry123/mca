@@ -15,8 +15,8 @@ CAM_NAME:=CAM/NAME
 
 # These are created by make
 ZIMAGE:=KERNEL/zImage_packing/zImage
-MCA_CARD:=SD_CONTENT/mca_carx.bin
-JFFS2:=SD_CONTENT/rootfx.jffs
+MCA_CARD:=SD_CONTENT/mca_card.bin
+JFFS2:=SD_CONTENT/rootfs.jffs2
 SD_FAT:=SD_CONTENT.fat
 FULL_IMG:=full_sd_image.img
 SD_MNT:=SD_MNT
@@ -38,6 +38,7 @@ $(MCA_CARD): $(ZIMAGE) $(APEX_FLASH)
 .PHONY: rootfs.jffs2
 rootfs.jffs2:  $(JFFS2)
 $(JFFS2): $(ROOTFS) $(CAM)
+	cp $(CAM) $(ROOTFS)/root/
 	$(MKJFFS2) -r $(ROOTFS) -o $(JFFS2) -e 128 -l -n -q -p
 	tools/mca_tool.pl -r $(JFFS2)
 
