@@ -31,7 +31,6 @@ if [ $? -ne 0 ]; then
         #We need some default configuration here, without configuration MCA will drop to a shell
         cp /mca_default.ini /var/mca/mca.ini
         cp /mca_default.ini /var/mca/default.ini
-        echo "install" > /var/mca/install
     fi
 fi
 
