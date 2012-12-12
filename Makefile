@@ -3,8 +3,8 @@ MKJFFS2:=/usr/sbin/mkfs.jffs2
 MKVFAT:=/sbin/mkfs.vfat
 
 # These files and directories need to exist
-APEX_FLASH:=APEX/apex_flash.bin
-APEX_SD:=APEX/apex_sd.bin
+APEX_FLASH:=BLOBS/apex_flash.bin
+APEX_SD:=BLOBS/apex_sd.bin
 INITRAMFS:=KERNEL/zImage_unpacked/initramfs
 ROOTFS:=ROOTFS
 SD_MBR:=BLOBS/SD_MBR.bin
@@ -15,6 +15,8 @@ CAM_NAME:=CONFIG/CAM_NAME
 MCABOOT_INI:=CONFIG/mcaboot.ini
 MCA_INI:=CONFIG/mca.ini
 RELEASE:=CONFIG/RELEASE
+APEX_SD_CMD:=CONFIG/APEX_SD_CMD
+APEX_FLASH_CMD:=CONFIG/APEX_FLASH_CMD
 SD_CONTENT:=distribution/SD_CONTENT
 
 # These are created by make
@@ -27,6 +29,16 @@ SD_MNT:=SD_MNT
 
 all: $(FULL_IMG)
 
+.PHONY: apex_sd.bin
+apex_sd.bin: $(APEX_SD)
+$(APEX_SD): $(APEX_SD_CMD)
+	tools/apex_tool.pl -s -r "`cat $(APEX_SD_CMD)`" $(APEX_SD)
+
+.PHONY: apex_flash.bin
+apex_flash.bin: $(APEX_SD)
+$(APEX_FLASH): $(APEX_FLASH_CMD)
+	tools/apex_tool.pl -f -r "`cat $(APEX_FLASH_CMD)`" $(APEX_FLASH)
+	
 .PHONY: zImage
 zImage:  $(ZIMAGE)
 $(ZIMAGE): $(INITRAMFS) $(MCABOOT_INI)

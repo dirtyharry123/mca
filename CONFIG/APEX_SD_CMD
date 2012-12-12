@@ -1,0 +1,1 @@
+erase lnand:128k+6m;fill -4 0xffffffff $bootaddr+6m;copy fat://1/mca_card.bin $bootaddr;copy $bootaddr+6m lnand:128k;copy lnand:768k+4m $bootaddr;boot
