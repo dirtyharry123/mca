@@ -1,1 +1,29 @@
 MCA-NG Development Area
+(C) 2012 - dirtyharry123
+
+Configuration:
+CONFIG/APEX_FLASH_CMD      Commandline for APEX in mca_card.bin        max 30 Bytes
+CONFIG/APEX_SD_CMD         Commandline for APEX in full_sd_image.img   max 130 Bytes
+CONFIG/CAIDS               Caids to be included in mca_cam.upb         max 26
+CONFIG/CAM_NAME            Name of CAM (MCA/MNG)                       max 3 Bytes
+CONFIG/CAM_VERSION         Version of CAM (326x)                       max 65535 (uint16_t)
+CONFIG/mcaboot.ini         Default MCA-configuration
+CONFIG/mca.ini             Not sure if this is used anywhere
+CONFIG/RELEASE             Name of release (MCA_NG-X.Y-339)
+
+Building (image creation uses "sudo"):
+make                       Create everything
+make image                 Create distribution/full_sd_image.img (and all dependencies => everything)
+make sd_content            Create all files in distribution/SD_CONTENT
+make rootfs.jffs2          Create distribution/SD_CONTENT/rootfs.jffs2 
+make mca_card.bin          Create distribution/SD_CONTENT/mca_card.bin (APEX_SD + zImage)
+
+Additional targets for convenience: (dependencies for the above targets)
+make zImage                Create KERNEL/zImage_packing/zImage
+make apex_sd.bin           Update BLOBS/apex_sd.bin
+make apex_flash.bin        Update BLOBS/apex_flash.bin
+make mca_cam.upb           Update BLOBS/mca_cam.upb
+
+Cleaning:
+make clean                 Delete intermediate files
+make distclean             Also delete distribution-files
