@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# APEX-tool (C) 2012 - dirtyharry123
 
 use strict;
 use Getopt::Std;
@@ -28,10 +29,6 @@ if($opt{h} || !$ARGV[0]){
     exit(1);
 }
 $file = $ARGV[0];
-
-my @CAIDS;
-my $crc;
-my $stored_crc;
 
 my $buffer;
 my $offset;

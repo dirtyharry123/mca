@@ -1,0 +1,25 @@
+Changelog MCA_NG-0.2-XMAS-339
+- Bootprozedur (initramfs + rootfs) komplett überarbeitet -> Bootzeit ca 1:30 min
+- Flash/SD-Update überarbeitet -> Speicherschonender, weniger Flash-Fehler
+- MCAM-Binary Patches:
+    - Versteckten sharing-client (tnet) deaktiviert.
+    - Überflüssige Funktionen (twitter, gmail, etc.) aus dem Menü entfernt.
+    - Delays/Sleeps an vielen Stellen reduziert. -> Kürzere Umschaltzeiten/Schnellere Reaktion
+- oscam-1.20-unstable_svn7963:
+    - Entfernung doppelter CAIDs/ECM-Pids -> Kürzere Umschaltzeiten
+    - "Locking" funktionierender CAIDs -> weniger Freezer
+    - Webinterface auf Port 90, user:password = oscam:oscam
+- CAM-Firmware:
+    - Unterstützte CAIDS: 0500 0626 0627 0628 0648 093B 0963 09C4 09C7 0B01 0D00 0D03 0D05
+                          0D95 0D96 1702 1722 1801 1803 1830 1833 1834 1835 1838 1843 1880
+    - Kein Downgrade mehr nötig.
+- mio/sci1-fix:
+    - Kernelhook zur Reduzierung der CPU-Last durch "sci1"-kernel-thread -> Schnellere Reaktion des Moduls
+- telnet/ssh:
+    - Telnet auf Default-Port (23).
+    - SSH (dropbear 0.52) auf Default-Port (22).
+    - SSH-Login ohne Fehlermeldung.
+    - user:password = root:root
+- busybox:
+    - Neue busybox (v1.20.2) mit vielen weiteren tools.
+

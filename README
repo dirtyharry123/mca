@@ -1,7 +1,7 @@
 MCA-NG Development Area
 (C) 2012 - dirtyharry123
 
-Configuration:
+Configuration files:
 CONFIG/APEX_FLASH_CMD      Commandline for APEX in mca_card.bin        max 30 Bytes
 CONFIG/APEX_SD_CMD         Commandline for APEX in full_sd_image.img   max 130 Bytes
 CONFIG/CAIDS               Caids to be included in mca_cam.upb         max 26
@@ -23,6 +23,7 @@ make zImage                Create KERNEL/zImage_packing/zImage
 make apex_sd.bin           Update BLOBS/apex_sd.bin
 make apex_flash.bin        Update BLOBS/apex_flash.bin
 make mca_cam.upb           Update BLOBS/mca_cam.upb
+make rootfs                Upadate ROOTFS
 
 Cleaning:
 make clean                 Delete intermediate files

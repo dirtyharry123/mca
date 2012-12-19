@@ -54,19 +54,31 @@ $(MCA_CARD): $(ZIMAGE) $(APEX_FLASH)
 
 .PHONY: rootfs.jffs2
 rootfs.jffs2:  $(JFFS2)
-$(JFFS2): $(ROOTFS) $(CAM) $(RELEASE)
-	cp $(CAM) $(ROOTFS)/root/
-	cp $(RELEASE) $(ROOTFS)/etc/
+$(JFFS2): $(ROOTFS)
 	$(MKJFFS2) -r $(ROOTFS) -o $(JFFS2) -e 128 -l -n -q -p
 	tools/mca_tool.pl -r $(JFFS2)
 
+.PHONY: rootfs
+rootfs: $(ROOTFS)
+$(ROOTFS): $(ROOTFS)/root/mca_cam.upb $(ROOTFS)/etc/RELEASE
+
+$(ROOTFS)/root/mca_cam.upb: $(CAM)
+	cp $(CAM) $(ROOTFS)/root/mca_cam.upb
+
+$(ROOTFS)/etc/RELEASE: $(RELEASE)
+	cp $(RELEASE) $(ROOTFS)/etc/RELEASE
+
 .PHONY: sd_content
 sd_content: $(SD_CONTENT) 
-$(SD_CONTENT): $(JFFS2) $(MCA_CARD) $(MCABOOT_INI) $(MCA_INI)
-	cp $(MCABOOT_INI) $(SD_CONTENT)/mcaboot.ini
+$(SD_CONTENT): $(JFFS2) $(MCA_CARD) $(SD_CONTENT)/mcaboot.ini $(SD_CONTENT)/mca.ini
+
+$(SD_CONTENT)/mca.ini: $(MCA_INI)
 	cp $(MCA_INI) $(SD_CONTENT)/mca.ini
 
-$(SD_FAT): $(JFFS2) $(MCA_CARD) $(MCABOOT_INI) $(MCA_INI)
+$(SD_CONTENT)/mcaboot.ini: $(MCABOOT_INI)
+	cp $(MCABOOT_INI) $(SD_CONTENT)/mcaboot.ini
+
+$(SD_FAT): $(SD_CONTENT)
 	dd if=/dev/zero of=$(SD_FAT) bs=1024 count=1879716
 	$(MKVFAT) -F 16 -n mca_ng $(SD_FAT)
 	mkdir $(SD_MNT)

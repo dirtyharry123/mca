@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# MCA-tool (C) 2012  - dirtyharry123
 
 use strict;
 use Getopt::Std;
