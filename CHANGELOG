@@ -1,4 +1,13 @@
-Changelog MCA_NG-0.2-XMAS-339
+Changelog MCA_NG (C) mrweb, dirtyharry123
+0.2.2-XMAS-339
+- CAM-Firmware:
+    - Unterstützte CAIDS: 1801 1802 1803 1810 1830 1833 1834 1835 1838 1843 1880 1702 1722
+                          0D03 0D05 0D95 0D96 09C4 09C7 098C 0963 0648 0626 0B01 0500 0100 
+0.2.1-XMAS-339
+- CAM-Firmware:
+    - Unterstützte CAIDS: 1803 0D05 1835 1838 1722 09C4 1702 1801 1802 098C 0500 0648 0963
+                          09C7 0B01 0626 0D95 0D03 0D96 1830 1833 1834 1843 1880 1810 0627
+0.2-XMAS-339
 - Bootprozedur (initramfs + rootfs) komplett überarbeitet -> Bootzeit ca 1:30 min
 - Flash/SD-Update überarbeitet -> Speicherschonender, weniger Flash-Fehler
 - MCAM-Binary Patches:

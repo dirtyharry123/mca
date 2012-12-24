@@ -8,6 +8,7 @@ APEX_SD:=BLOBS/apex_sd.bin
 INITRAMFS:=KERNEL/zImage_unpacked/initramfs
 ROOTFS:=ROOTFS
 SD_MBR:=BLOBS/SD_MBR.bin
+SD_MBR_1G:=BLOBS/SD_MBR_1G.bin
 CAM:=BLOBS/mca_cam.upb
 CAIDS:=CONFIG/CAIDS
 CAM_VERSION:=CONFIG/CAM_VERSION
@@ -24,7 +25,9 @@ ZIMAGE:=KERNEL/zImage_packing/zImage
 MCA_CARD:=$(SD_CONTENT)/mca_card.bin
 JFFS2:=$(SD_CONTENT)/rootfs.jffs2
 SD_FAT:=SD_CONTENT.fat
+SD_FAT_1G:=SD_CONTENT_1G.fat
 FULL_IMG:=distribution/full_sd_image.img
+FULL_IMG_1G:=distribution/full_sd_image_1G.img
 SD_MNT:=SD_MNT
 
 all: $(FULL_IMG)
@@ -87,6 +90,15 @@ $(SD_FAT): $(SD_CONTENT)
 	sudo umount $(SD_MNT)
 	rm -rf $(SD_MNT)
 
+$(SD_FAT_1G): $(SD_CONTENT)
+	dd if=/dev/zero of=$(SD_FAT_1G) bs=1024 count=985181
+	$(MKVFAT) -F 16 -n mca_ng $(SD_FAT_1G)
+	mkdir $(SD_MNT)
+	sudo mount -o loop $(SD_FAT_1G) $(SD_MNT)
+	sudo cp -r $(SD_CONTENT)/* $(SD_MNT)/
+	sudo umount $(SD_MNT)
+	rm -rf $(SD_MNT)
+
 .PHONY: image
 image:  $(FULL_IMG)
 $(FULL_IMG): $(SD_FAT) $(APEX_SD) $(SD_MBR)
@@ -94,6 +106,14 @@ $(FULL_IMG): $(SD_FAT) $(APEX_SD) $(SD_MBR)
 	dd if=$(SD_MBR) of=$(FULL_IMG) bs=512 conv=notrunc
 	dd if=$(APEX_SD) of=$(FULL_IMG) bs=512 seek=62 conv=notrunc
 	dd if=$(SD_FAT) of=$(FULL_IMG) oflag=append conv=notrunc
+
+.PHONY: image_1G
+image_1G:  $(FULL_IMG_1G)
+$(FULL_IMG_1G): $(SD_FAT_1G) $(APEX_SD) $(SD_MBR_1G)
+	dd if=/dev/zero of=$(FULL_IMG_1G) bs=512 count=126852
+	dd if=$(SD_MBR_1G) of=$(FULL_IMG_1G) bs=512 conv=notrunc
+	dd if=$(APEX_SD) of=$(FULL_IMG_1G) bs=512 seek=62 conv=notrunc
+	dd if=$(SD_FAT_1G) of=$(FULL_IMG_1G) oflag=append conv=notrunc
 
 .PHONY: mca_cam.upb
 mca_cam.upb:  $(CAM)
