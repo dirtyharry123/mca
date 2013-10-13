@@ -52,7 +52,7 @@ $(ZIMAGE): $(INITRAMFS) $(MCABOOT_INI)
 
 .PHONY: zImage_new
 zImage_new: $(ZIMAGE_NEW)
-$(ZIMAGE_NEW): SRC/KERNEL/linux-2.6.28.2/
+$(ZIMAGE_NEW): SRC/KERNEL/
 	cd SRC/KERNEL && $(MAKE)
 
 .PHONY: mca_card.bin
