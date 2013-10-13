@@ -17,11 +17,13 @@ MCABOOT_INI:=CONFIG/mcaboot.ini
 MCA_INI:=CONFIG/mca.ini
 RELEASE:=CONFIG/RELEASE
 APEX_SD_CMD:=CONFIG/APEX_SD_CMD
+APEX_SD_CMD_BOOT:=CONFIG/APEX_SD_CMD_BOOT
 APEX_FLASH_CMD:=CONFIG/APEX_FLASH_CMD
 SD_CONTENT:=distribution/SD_CONTENT
 
 # These are created by make
 ZIMAGE:=KERNEL/zImage_packing/zImage
+ZIMAGE_NEW:=SRC/KERNEL/linux-2.6.28.2/arch/arm/boot/zImage
 MCA_CARD:=$(SD_CONTENT)/mca_card.bin
 JFFS2:=$(SD_CONTENT)/rootfs.jffs2
 SD_FAT:=SD_CONTENT.fat
@@ -47,6 +49,11 @@ zImage:  $(ZIMAGE)
 $(ZIMAGE): $(INITRAMFS) $(MCABOOT_INI)
 	cp $(MCABOOT_INI) $(INITRAMFS)/mca_default.ini
 	cd KERNEL/ && PATH=$(PATH):$(ROOT_DIR)/tools/ $(ROOT_DIR)/tools/repack-zImage.sh -p
+
+.PHONY: zImage_new
+zImage_new: $(ZIMAGE_NEW)
+$(ZIMAGE_NEW): SRC/KERNEL/linux-2.6.28.2/
+	cd SRC/KERNEL && $(MAKE)
 
 .PHONY: mca_card.bin
 mca_card.bin:  $(MCA_CARD)
@@ -123,8 +130,10 @@ $(CAM): $(CAIDS) $(CAM_VERSION) $(CAM_NAME)
 clean:
 	rm -rf KERNEL/zImage_packing
 	rm -rf $(SD_FAT)
+	rm -rf $(SD_FAT_1G)
 
 distclean: clean
 	rm -rf $(FULL_IMG)
+	rm -rf $(FULL_IMG_1G)
 	rm -rf $(SD_CONTENT)/*
 

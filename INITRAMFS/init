@@ -1,0 +1,359 @@
+#!/bin/sh
+#Create initial device nodes
+mknod -m 600 /dev/console c 5 1
+mknod -m 666 /dev/null c 1 3
+
+#Mount things needed by this script
+echo "########################################################"
+echo "###############     STARTING SYSTEM     ################"
+echo "########################################################"
+echo
+echo "Mount initram Filesystems..."
+mkdir /mnt/sd
+mount -t proc proc /proc
+mount -t tmpfs mdev /dev -o size=1024
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts -o gid=5,mode=620
+mount -t sysfs sysfs /sys
+echo "Mount /var as tmpfs"
+mount -t tmpfs tmpfs /var -o size=8192k
+echo "Create /var directory structure"
+mkdir -p /var/tmp /var/run/utmp /var/state/dhcp /var/lib/nfs /var/spool/lpd /var/spool/mail /var/lock /var/www /var/log/wtmp /var/mca /var/mail /var/tmp/dn /var/tmp/ltib /var/tmp/newroot /var/tmp/sd
+echo "Create /dev structure..."
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+mdev -s
+
+echo "Mount /dev/mtd5 as /var/mca"
+mount -t jffs2  /dev/mtdblock5 /var/mca
+if [ $? -ne 0 ]; then
+  echo "Repair /var/mca partition (/dev/mtd5)"
+    nandtest -k -m /dev/mtd5
+    mount -t jffs2 /dev/mtdblock5 /var/mca 
+    if [ $? -ne 0 ]; then
+        flash_eraseall /dev/mtd5
+        mount -t jffs2 /dev/mtdblock5 /var/mca 
+        #We need some default configuration here, without configuration MCA will drop to a shell
+        cp /mca_default.ini /var/mca/mca.ini
+        cp /mca_default.ini /var/mca/default.ini
+    fi
+fi
+
+
+echo "Insert Kernel IO Module mega_io"
+insmod /etc/mega_io.ko
+echo d > /proc/mega_io
+
+#Function for parsing command line options with "=" in them
+# get_opt("init=/sbin/init") will return "/sbin/init"
+boot_config_file="/mnt/sd/mcaboot.ini"
+
+getcfgitem()
+{
+  grep "$1" $boot_config_file | grep "$2" > /dev/null 2>&1
+
+  if [ $? -eq 0 ]; then
+    return 1
+  else
+    return 0
+  fi
+}
+
+
+
+isfile()
+{
+  if [ -f "$@" ]
+  then
+    echo y
+  else
+    echo n
+  fi
+}
+
+get_config() {
+  cat $boot_config_file | grep "$@=" | grep -v '#' | cut -d "=" -f 2
+}
+get_opt() {
+  echo "$@" | cut -d "=" -f 2
+}
+
+#Defaults
+init="/sbin/init"
+root="/dev/ram0"
+WifiDriver=/etc/Wireless/rt3070sta.ko
+NetworkType=
+AuthMode=
+EncrypType=
+SSID=mca
+WPAPSK=
+DefaultKeyID=
+Key1=
+Key2=
+Key3=
+Key4=
+nfsroot=
+nettype="AUTO"
+ipaddr=
+auserver=
+ins_mca="no"
+delay_val=0
+boot_mode="default"
+upgrade="no"
+
+echo "Kernel Commandline: $(cat /proc/cmdline)"
+
+#Process command line options
+for i in $(cat /proc/cmdline); do
+case $i in
+  root\=*)root=$(get_opt $i);;
+  init\=*)init=$(get_opt $i);;
+  WifiDriver\=*)WifiDriver=$(get_opt $i);;
+  NetworkType\=*)NetworkType=$(get_opt $i);;
+  AuthMode\=*)AuthMode=$(get_opt $i);;
+  EncrypType\=*)EncrypType=$(get_opt $i);;
+  SSID\=*)SSID=$(get_opt $i);;
+  WPAPSK\=*)WPAPSK=$(get_opt $i);;
+  DefaultKeyID\=*)DefaultKeyID=$(get_opt $i);;
+  Key1\=*)Key1=$(get_opt $i);;
+  Key2\=*)Key2=$(get_opt $i);;
+  Key3\=*)Key3=$(get_opt $i);;
+  Key4\=*)Key4=$(get_opt $i);;
+  nfsroot\=*)nfsroot=$(get_opt $i);;
+  nettype\=*)nettype=$(get_opt $i);;
+  ipaddr\=*)ipaddr=$(get_opt $i);;
+  auserver\=*)auserver=$(get_opt $i);;
+  ins_mca\=*)ins_mca=$(get_opt $i);;
+  upgrade\=*)upgrade=$(get_opt $i);;
+esac
+done
+
+# Data
+
+if [ -e /dev/mmcblk0p1 ]; then
+  echo "Mount SD Card"
+  mount -t vfat /dev/mmcblk0p1 /mnt/sd
+fi
+
+echo "Initialize mcai"
+if [ "$upgrade" = "yes" ]; then
+  mcai ini_up
+else
+  mcai ini
+fi
+
+if [ "$upgrade" = "yes" ]; then
+  boot_config_file="/var/mca/mca.ini"
+else
+  if [ "$(isfile "$boot_config_file")" = "n" ]; then
+    boot_config_file="/var/mca/mca.ini"
+  fi
+fi
+echo "Set boot config file to : $boot_config_file"
+
+getcfgitem nandtest yes
+testnand=$?
+
+getcfgitem keepconfig yes
+keepconfig=$?
+
+if [ "$(isfile "$boot_config_file")" = "y" ]; then
+  echo "Reading cfg file $boot_config_file"
+
+  if [ -n "$(mcai GET BOOT_ROOT)" ]; then 	
+    root=$(mcai GET BOOT_ROOT)
+  fi
+  if [ -n "$(mcai GET BOOT_INIT)" ]; then 	
+    init=$(mcai GET BOOT_INIT)
+  fi
+  if [ -n "$(mcai GET BOOT_NFSROOT)" ]; then 	
+    nfsroot=$(mcai GET BOOT_NFSROOT)
+  fi
+  if [ -n "$(mcai GET BOOT_AUSERVER)" ]; then 	
+    auserver=$(mcai GET BOOT_AUSERVER)
+  fi
+  
+  if [ "$upgrade" = "yes" ]; then
+    ins_mca=upgrade
+  else
+    if [ "$boot_config_file" = "/mnt/sd/mcaboot.ini" ]; then
+      if [ -n "$(mcai GET BOOT_INS_MCA)" ]; then 	
+        ins_mca=$(mcai GET BOOT_INS_MCA)
+      fi
+    fi
+  fi
+
+  if [ -n "$(mcai GET BOOT_DELAY_VAL)" ]; then 	
+    delay_val=$(mcai GET BOOT_DELAY_VAL)
+  fi
+  if [ -n "$(mcai GET BOOT_BOOT_MODE)" ]; then 	
+    boot_mode=$(mcai GET BOOT_BOOT_MODE)
+  fi
+  
+  bootselect=$(mcai GET BOOT_SELECT)
+fi
+
+echo "End configuration"
+
+
+if [ "$upgrade" = "yes" ]; then
+  echo "Starting Upgrade"
+  
+  if [ $testnand -eq 1 ]; then
+    echo "Nandtest /dev/mtd6..."
+    nandtest -m /dev/mtd6
+  fi
+ 
+  echo "Erase flash partition BASE (mtd6)" 
+  flash_eraseall /dev/mtd6
+
+  sync
+  echo "Write rootfs to flash"
+  nandwrite /dev/mtd6 /mnt/sd/rootfs.jffs2
+  sync  
+else 
+  if [ "$ins_mca" = "yes" ]; then
+      echo "Starting Install"
+      echo f > /proc/mega_io
+#     mcai e d c
+      mcai e 
+      ls -l /tmp/
+#     flash_eraseall /dev/mtd5
+      
+      if [ $keepconfig -eq 0 ]; then
+        umount /dev/mtdblock5
+        if [ $testnand -eq 1 ]; then
+          echo "Nandtest /dev/mtd5 ..."
+          nandtest -m /dev/mtd5
+        fi
+
+        echo "Erase Configuration (/dev/mtd5)"
+        flash_eraseall /dev/mtd5
+        mount -t jffs2  /dev/mtdblock5 /var/mca
+        cp $boot_config_file /var/mca/mca.ini
+        cp $boot_config_file /var/mca/default.ini
+      fi
+
+      if [ "$bootselect" = "master" ]; then 
+        echo "Erase flash partition BASE (mtd6)"
+        if [ $testnand -eq 1 ]; then
+          nandtest -m /dev/mtd6
+        fi
+        flash_eraseall /dev/mtd6
+        echo "Write rootfs to flash"
+        nandwrite /dev/mtd6 /mnt/sd/rootfs.jffs2
+      fi
+      
+      if [ "$bootselect" = "disk1" ]; then 
+        echo "Erase flash partition DISK1 (mtd7)"
+        if [ $testnand -eq 1 ]; then
+          nandtest -m /dev/mtd7
+        fi
+        flash_eraseall /dev/mtd7
+        echo "Write rootfs to flash"
+        nandwrite /dev/mtd7 /mnt/sd/rootfs.jffs2
+      fi
+      
+      if [ "$bootselect" = "disk2" ]; then 
+        echo "Erase flash partition DISK2 (mtd8)"
+        if [ $testnand -eq 1 ]; then
+          nandtest -m /dev/mtd8
+        fi
+        flash_eraseall /dev/mtd8 
+        echo "Write rootfs to flash"
+        nandwrite /dev/mtd8 /mnt/sd/rootfs.jffs2
+      fi
+      
+      sync
+
+      echo "install" > /var/mca/install
+      sync
+  else
+    sync
+    ls -l /tmp/
+  fi
+fi
+
+
+#Mount the root device
+#case "$boot_mode" in
+#  'nfs')
+#    echo nfsroot=$nfsroot
+#    mount -t nfs -o nolock,tcp $nfsroot /newroot
+#  ;;
+#  'ramfs')
+#    echo "to do ramfs!!"
+#  ;;
+#  'sd')
+#    echo "to do sd"
+#  ;;
+#  'default')
+#    case "$(mcai GET BOOT_SELECT)" in
+#      'master')	
+#        echo BOOT ON MASTER
+#        mount -t jffs2 /dev/mtdblock6 /newroot
+#      ;;
+#      'disk1')
+#        echo BOOT ON DISK1
+#        mount -t jffs2 /dev/mtdblock7 /newroot
+#      ;;
+#      'disk2')
+#        echo BOOT ON DISK2
+#        mount -t jffs2 /dev/mtdblock8 /newroot
+#      ;;
+#    esac
+#  ;;
+#esac
+
+case "$(mcai GET BOOT_SELECT)" in
+  'master')	
+     echo BOOT ON MASTER
+     mount -t jffs2 /dev/mtdblock6 /newroot
+   ;;
+  'disk1')
+     echo BOOT ON DISK1
+     mount -t jffs2 /dev/mtdblock7 /newroot
+   ;;
+   'disk2')
+     echo BOOT ON DISK2
+     mount -t jffs2 /dev/mtdblock8 /newroot
+   ;;
+esac
+
+#Check if $init exists and is executable
+echo "Init: ${init}"
+if [[ -x "/newroot/${init}" ]] ; then
+#Unmount all other mounts so that the ram used by
+#the initramfs can be cleared after switch_root
+
+#umount /mnt/sd
+#umount /var/mca
+#umount /sys /proc
+
+if [ -e /dev/mmcblk0p1 ]; then
+  echo "Move /mnt/sd to /newroot/mnt/sd"
+  mkdir -p /newroot/mnt/sd 
+  mount --move /mnt/sd /newroot/mnt/sd
+fi
+
+
+echo "Move /var to /newroot/var"
+mount --move /var /newroot/var
+
+echo "Move /sys to /newroot/sys"
+mount --move /sys /newroot/sys
+
+echo "Move /dev to /newroot/dev"
+mount --move /dev /newroot/dev
+
+echo "Move /proc to /newroot/proc"
+mount --move /proc /newroot/proc
+
+#Switch to the new root and execute init
+
+exec switch_root /newroot "${init}"
+
+fi
+#This will only be run if the exec above failed
+echo "Failed to switch_root, dropping to a shell"
+exec sh
+

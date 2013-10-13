@@ -1,0 +1,1 @@
+wait 10; copy fat://1/mca_card.bin 0x30808000; copy 0x308A8000+4m $bootaddr; boot
