@@ -51,8 +51,12 @@ $(NAME)-$(VERSION)/arch/arm/boot/zImage: $(NAME)-$(VERSION)/.config $(TOOLCHAIN)
 	$(MAKE) -C $(NAME)-$(VERSION) zImage
 
 .PHONY: modules
-modules:
+modules: config
 	$(MAKE) -C $(NAME)-$(VERSION) modules
+
+.PHONY: modules_install
+modules_install: modules
+	$(MAKE) -C $(NAME)-$(VERSION) modules_install
 
 .PHONY: clean
 clean:
