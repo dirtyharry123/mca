@@ -47,8 +47,11 @@ zImage: $(NAME)-$(VERSION)/arch/arm/boot/zImage
 
 .PHONY: $(NAME)-$(VERSION)/arch/arm/boot/zImage
 $(NAME)-$(VERSION)/arch/arm/boot/zImage: $(NAME)-$(VERSION)/.config $(TOOLCHAIN)
-	echo $(PATH)
 	$(MAKE) -C $(NAME)-$(VERSION) zImage
+
+.PHONY: modules
+modules:
+	$(MAKE) -C $(NAME)-$(VERSION) modules
 
 .PHONY: clean
 clean:
