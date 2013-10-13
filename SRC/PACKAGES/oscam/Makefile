@@ -45,7 +45,7 @@ install: oscam
 
 .PHONY: clean
 clean:
-	$(MAKE) -C oscam/trunk clean
+	@[ -d oscam/trunk ] && $(MAKE) -C oscam/trunk clean || [ 1 ]
 
 .PHONY: distclean
 distclean: clean

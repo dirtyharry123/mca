@@ -6,6 +6,7 @@ TOOLCHAIN := $(PWD)/../../toolchain/Sourcery_G++_Lite-2011.03-41/bin/
 export PATH := $(PATH):$(TOOLCHAIN)
 export CROSS_COMPILE = arm-none-linux-gnueabi-
 export ARCH = arm
+export INSTALL_MOD_PATH := $(PWD)/../../ROOTFS
 
 all: zImage
 
@@ -55,7 +56,7 @@ modules:
 
 .PHONY: clean
 clean:
-	$(MAKE) -C $(NAME)-$(VERSION) clean
+	[ -d $(NAME)-$(VERSION) ] && $(MAKE) -C $(NAME)-$(VERSION) clean || [ 1 ]
 
 .PHONY: distclean
 distclean: clean
