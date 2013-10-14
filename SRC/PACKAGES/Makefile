@@ -1,10 +1,17 @@
+PACKAGES = $(shell ls -d */)
 .PHONY: all clean distclean
 
-all: oscam/Makefile
-	$(MAKE) -C oscam all
+all:
+	for package in $(PACKAGES); do \
+		$(MAKE) -C $$package all; \
+	done
 
 clean:
-	$(MAKE) -C oscam clean
+	for package in $(PACKAGES); do \
+		$(MAKE) -C $$package clean; \
+	done
 
 distclean: clean
-	$(MAKE) -C oscam distclean
+	for package in $(PACKAGES); do \
+		$(MAKE) -C $$package distclean; \
+	done

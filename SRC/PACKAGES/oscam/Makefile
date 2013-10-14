@@ -1,12 +1,12 @@
 NAME := oscam
-VERSION = $(shell [ -e oscam/trunk/config.sh ] && oscam/trunk/config.sh -v || echo 0)
-SVN_REV = $(shell [ -e oscam/trunk/config.sh ] && oscam/trunk/config.sh -r || echo svn0)
+VERSION := $(shell [ -e oscam/trunk/config.sh ] && oscam/trunk/config.sh -v || echo 0)
+SVN_REV := $(shell [ -e oscam/trunk/config.sh ] && oscam/trunk/config.sh -r || echo svn0)
 CHECKOUT_REV := HEAD
 URL := http://www.streamboard.tv/svn/oscam
 
 OSCAM = oscam/trunk/Distribution/$(NAME)-$(VERSION)$(SVN_REV)-$(CROSS_COMPILE)mca
 
-TOOLCHAIN := $(PWD)/../../../toolchain/Sourcery_G++_Lite-2011.03-41/bin/
+TOOLCHAIN := $(shell pwd)/../../../toolchain/Sourcery_G++_Lite-2011.03-41/bin/
 export PATH := $(PATH):$(TOOLCHAIN)
 export CROSS_COMPILE = arm-none-linux-gnueabi-
 export ARCH = arm
