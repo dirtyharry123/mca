@@ -1,0 +1,285 @@
+diff --exclude .git -purN apex-1.6.8-orig/src/mach-lpc313x/drv-lpcnand.c apex-1.6.8/src/mach-lpc313x/drv-lpcnand.c
+--- apex-1.6.8-orig/src/mach-lpc313x/drv-lpcnand.c	2013-10-18 13:33:26.869671253 +0200
++++ apex-1.6.8/src/mach-lpc313x/drv-lpcnand.c	2013-10-18 13:33:41.225671534 +0200
+@@ -111,7 +111,11 @@ static const NAND_BOOT_CFG_PARAMS_T chip
+ 		.amount_of_erase_address_bytes = 3,
+ 		.support_read_terminate = 1,
+ 		.page_increment_byte_nr = 2,
++#if defined (CONFIG_MACH_MCA)
++		.device_name = { 0x2C, 0xDA, 0xFF, 0x95, 0x20, 'M', 'T', '2', '9', 'F', '2', 'G', '0', '8',}, /* first 4bytes to fill with readid response */
++#else
+ 		.device_name = { 0x2C, 0xAA, 0xFF, 0x15, 0x20, 'M', 'T', '2', '9', 'F', '2', 'G', '0', '8',}, /* first 4bytes to fill with readid response */
++#endif
+ 		/* assuming 90MHz clock (1clock = 11ns)to NAND block */
+ 		/* Note, timing macros tcopy naake clk +1 values. */
+ 		/* tsrd=3, tals=3, talh=1, tcls=3, tclh=1, */
+diff --exclude .git -purN apex-1.6.8-orig/src/mach-lpc313x/drv-mmc.c apex-1.6.8/src/mach-lpc313x/drv-mmc.c
+--- apex-1.6.8-orig/src/mach-lpc313x/drv-mmc.c	2013-10-18 13:33:26.869671253 +0200
++++ apex-1.6.8/src/mach-lpc313x/drv-mmc.c	2013-10-18 13:33:41.225671534 +0200
+@@ -555,6 +555,14 @@ void SECTION mmc_acquire (void)
+ 		DBG (1, "%s: Card not inserted 0x%lx\n", __FUNCTION__, GPIO_STATE(IOCONF_GPIO));
+ 		return;
+ 	}
++#elif defined(CONFIG_MACH_MCA)
++	/* check if card is inserted in the slot. mI2STX_BCK0 */
++	GPIO_IN(IOCONF_EBI_MCI, _BIT(7));
++	if (!(GPIO_STATE(IOCONF_EBI_MCI) & _BIT(7))) {
++		/* card is absent  return */
++		DBG (1, "%s: Card not inserted 0x%lx\n", __FUNCTION__, GPIO_STATE(IOCONF_GPIO));
++		return;
++	}
+ #endif
+ 
+ 	/* clear card type */
+diff --exclude .git -purN apex-1.6.8-orig/src/mach-lpc313x/env.c apex-1.6.8/src/mach-lpc313x/env.c
+--- apex-1.6.8-orig/src/mach-lpc313x/env.c	2013-10-18 13:33:26.873671275 +0200
++++ apex-1.6.8/src/mach-lpc313x/env.c	2013-10-18 13:33:41.225671534 +0200
+@@ -31,6 +31,8 @@ __env struct env_d e_cmdline = {
+ #if defined(CONFIG_MACH_VAL3153) || defined(CONFIG_MACH_EA313x_V2) || defined(CONFIG_MACH_EA3152)
+   .default_value = "console=ttyS0,115200n8 root=/dev/nfs rw nfsroot=/tftpboot/arm ip=rarp loglevel=7",
+   //.default_value = "console=ttyS0,115200n8 root=/dev/ram0 rw ip=rarp loglevel=7 ramdisk_size=12000K",
++#elif defined(CONFIG_MACH_MCA)
++  .default_value = "console=ttyS0,115200n8 ramdisk_size=14000K",
+ #else
+   .default_value = "console=ttyS0,115200n8 root=/dev/ram0 rw loglevel=7 ramdisk_size=12000K",
+ #endif
+diff --exclude .git -purN apex-1.6.8-orig/src/mach-lpc313x/initialize.c apex-1.6.8/src/mach-lpc313x/initialize.c
+--- apex-1.6.8-orig/src/mach-lpc313x/initialize.c	2013-10-18 13:33:26.873671275 +0200
++++ apex-1.6.8/src/mach-lpc313x/initialize.c	2013-10-18 13:33:41.229671533 +0200
+@@ -65,7 +65,11 @@ extern const CGU_CLKS_INIT_T g_cgu_defau
+ #endif
+ 
+ 
++#if defined (CONFIG_MACH_MCA)
++#define SDRAM_CHIP_MODE   _SBF(12, 0x23)
++#else
+ #define SDRAM_CHIP_MODE   _SBF(13, 0x23)
++#endif
+ 
+ const CGU_HPLL_SETUP_T const g_pll = CUR_PLL_SET;
+ 
+@@ -203,7 +207,7 @@ void __naked __section (.bootstrap) init
+   /* enable oe toggle between consecutive reads */
+   SYS_MPMC_WTD_DEL0 = _BIT(5) | 6;
+   SYS_MPMC_WTD_DEL1 = _BIT(5) | 18;
+-#elif defined(CONFIG_MACH_EA313x_V1) || defined(CONFIG_MACH_EA313x_V2) || defined(CONFIG_MACH_EA3152)
++#elif defined(CONFIG_MACH_EA313x_V1) || defined(CONFIG_MACH_EA313x_V2) || defined(CONFIG_MACH_EA3152) || defined(CONFIG_MACH_MCA)
+   /* LCD display, 16 bit */
+   MPMC_STCONFIG0  = 0x81;
+   MPMC_STWTWEN0   = 2;
+@@ -227,7 +231,11 @@ void __naked __section (.bootstrap) init
+   
+   /* SDRAM */
+   MPMC_DYRDCFG    = MPMC_SDRAMC_RDCFG_CMDDELAY_STG;
++#if defined (CONFIG_MACH_MCA)
++  MPMC_DYCONFIG   = SDRAMC_16HP_16Mx16_4B_R13_C9;
++#else
+   MPMC_DYCONFIG   = SDRAMC_16HP_32Mx16_4B_R13_C10;
++#endif
+   MPMC_DYRASCAS   = MPMC_SDRAMC_RASCAS_RAS2 | MPMC_SDRAMC_RASCAS_CAS2;
+   /* min 20ns program 1 so that atleast 2 HCLKs are used */
+   MPMC_DYTRP    = NS_TO_MPMCCLK(20, HCLK);
+@@ -256,7 +264,11 @@ void __naked __section (.bootstrap) init
+ 
+   /* set mode register by reading the address */
+   __REG (EXT_SDRAM_PHYS + SDRAM_CHIP_MODE);
++#if defined (CONFIG_MACH_MCA)
++  MPMC_DYCONFIG  = SDRAMC_16HP_16Mx16_4B_R13_C9;
++#else
+   MPMC_DYCONFIG  = SDRAMC_16HP_32Mx16_4B_R13_C10;
++#endif
+   /* select normal operating mode */
+   MPMC_DYNCTL    = MPMC_SDRAMC_CTL_CE | MPMC_SDRAMC_CTL_CS | MPMC_SDRAMC_CTL_NORMAL_CMD;
+ 
+diff --exclude .git -purN apex-1.6.8-orig/src/mach-lpc313x/Kconfig apex-1.6.8/src/mach-lpc313x/Kconfig
+--- apex-1.6.8-orig/src/mach-lpc313x/Kconfig	2013-10-18 13:33:26.873671275 +0200
++++ apex-1.6.8/src/mach-lpc313x/Kconfig	2013-10-18 13:33:41.229671533 +0200
+@@ -25,6 +25,10 @@ config MACH_EA313x_V2
+ 	select USES_DM9000
+ 	select USES_NAND
+ 	select USES_SPINOR
++
++config MACH_MCA
++	bool "MatrixCamAir"
++	select USES_NAND
+ 	
+ config MACH_EA3152
+ 	bool "EA3152 board w/ ethernet"
+@@ -85,7 +89,7 @@ config ATAG_PHYS
+ config ARCH_NUMBER
+ 	int
+ 	default 9999 if (MACH_VAL3153)
+-	default 9998 if (MACH_EA313x_V1 || MACH_EA313x_V2)
++	default 9998 if (MACH_EA313x_V1 || MACH_EA313x_V2 || MACH_MCA)
+ 	default 9997 if (MACH_VAL3154)
+ 	default 9996 if (MACH_EA3152)
+ 
+diff --exclude .git -purN apex-1.6.8-orig/src/mach-lpc313x/mca_config apex-1.6.8/src/mach-lpc313x/mca_config
+--- apex-1.6.8-orig/src/mach-lpc313x/mca_config	1970-01-01 01:00:00.000000000 +0100
++++ apex-1.6.8/src/mach-lpc313x/mca_config	2013-10-18 13:34:15.849675286 +0200
+@@ -0,0 +1,151 @@
++#
++# Automatically generated make config: don't edit
++# Linux kernel version: KERNELVERSION
++# Thu Oct 17 19:53:29 2013
++#
++CONFIG_ARM=y
++CONFIG_CPU_ARMV5=y
++CONFIG_CPU_ARM9=y
++CONFIG_CPU_ARM926T=y
++# CONFIG_ARCH_LH7952X is not set
++# CONFIG_ARCH_LH7A40X is not set
++# CONFIG_ARCH_IXP42X is not set
++# CONFIG_ARCH_S3C2410 is not set
++# CONFIG_ARCH_MX3 is not set
++# CONFIG_ARCH_ORION5X is not set
++CONFIG_ARCH_LPC313X=y
++# CONFIG_EXPERIMENTAL is not set
++# CONFIG_SMALL is not set
++
++#
++# General Setup
++#
++CONFIG_TARGET_DESCRIPTION="Unspecified target"
++CONFIG_CROSS_COMPILE="arm-none-linux-gnueabi-"
++CONFIG_AEABI=y
++# CONFIG_DRIVER_LONG_LONG_SIZE is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++# CONFIG_CC_OPTIMIZE_FOR_SPEED is not set
++# CONFIG_CC_NO_OPTIMIZATION is not set
++# CONFIG_STARTUP_UART is not set
++# CONFIG_DEBUG_LL is not set
++CONFIG_SPINNER=y
++CONFIG_ATAG=y
++# CONFIG_MMU is not set
++CONFIG_DISABLE_MMU_AT_BOOT=y
++CONFIG_SDRAMBOOT_REPORT=y
++CONFIG_STACK_SIZE=0x1000
++# CONFIG_BOOTSTRAP_MEMTEST is not set
++CONFIG_ATAG_PHYS=0x30000000
++CONFIG_ARCH_NUMBER=9998
++CONFIG_APEX_VMA=0x11029000
++CONFIG_KERNEL_LMA=0x30008000
++CONFIG_USE_RAMDISK=y
++CONFIG_RAMDISK_LMA=0x31000000
++CONFIG_MACH="lpc313x"
++CONFIG_RAMDISK_SIZE=0x00300000
++# CONFIG_MACH_VAL3153 is not set
++# CONFIG_MACH_VAL3154 is not set
++# CONFIG_MACH_EA313x_V1 is not set
++# CONFIG_MACH_EA313x_V2 is not set
++CONFIG_MACH_MCA=y
++# CONFIG_MACH_EA3152 is not set
++
++#
++# Platform Setup
++#
++CONFIG_OSC_FREQ=12000000
++CONFIG_PLL_180=y
++# CONFIG_PLL_270 is not set
++CONFIG_DYNAMIC_CLOCKS=y
++# CONFIG_USB_BOOT is not set
++CONFIG_AUTOFORMAT_BLOCK0=y
++CONFIG_MICRON_MT29F2G08=y
++# CONFIG_MICRON_MT29F4G08 is not set
++# CONFIG_SAMSUNG_K9K8G is not set
++# CONFIG_TOSHIBA_TC58DVM82A is not set
++
++#
++# Commands
++#
++CONFIG_ALLHELP=y
++CONFIG_ALPHABETIZE_COMMANDS=y
++CONFIG_PARTIAL_MATCHES=y
++CONFIG_DEL_IS_BS=y
++CONFIG_ANSI_KEYS=y
++CONFIG_COMMAND_HISTORY=y
++CONFIG_COMMAND_EDITING=y
++# CONFIG_TIME_COMMANDS is not set
++CONFIG_CMD_ALIAS=y
++CONFIG_CMD_CHECKSUM=y
++CONFIG_CMD_COPY=y
++CONFIG_CMD_COMPARE=y
++CONFIG_CMD_DRVINFO=y
++CONFIG_CMD_DUMP=y
++CONFIG_CMD_ENV=y
++CONFIG_CMD_IMAGE=y
++# CONFIG_CMD_IMAGE_APEX is not set
++# CONFIG_CMD_IMAGE_UBOOT is not set
++CONFIG_CMD_IMAGE_SHOW=y
++CONFIG_CMD_ERASE=y
++CONFIG_CMD_FILL=y
++CONFIG_CMD_GO=y
++CONFIG_CMD_INFO=y
++# CONFIG_CMD_PARSE is not set
++# CONFIG_CMD_PAUSE is not set
++# CONFIG_CMD_FLASHUSAGE is not set
++CONFIG_CMD_WAIT=y
++CONFIG_CMD_XRECEIVE=y
++# CONFIG_CMD_MEMLIMIT is not set
++# CONFIG_CMD_MEMSCAN is not set
++# CONFIG_CMD_MEMTEST is not set
++CONFIG_CMD_NAND=y
++# CONFIG_CRC32_LSB is not set
++
++#
++# Generic Drivers
++#
++CONFIG_DRIVER_FAT=y
++CONFIG_DRIVER_FAT_BLOCKDEVICE="mmc"
++CONFIG_DRIVER_EXT2=y
++CONFIG_DRIVER_EXT2_BLOCKDEVICE="mmc"
++# CONFIG_DRIVER_JFFS2 is not set
++# CONFIG_DRIVER_FIS is not set
++CONFIG_DRIVER_NAND=y
++# CONFIG_DRIVER_NAND_TYPE_TOSHIBA is not set
++# CONFIG_DRIVER_NAND_TYPE_ST is not set
++CONFIG_DRIVER_NAND_TYPE_MICRON=y
++CONFIG_DRIVER_NAND_ADDRESS_BYTES=2
++# CONFIG_DRIVER_ONENAND is not set
++CONFIG_USES_NAND=y
++CONFIG_USES_PATHNAME_PARSER=y
++
++#
++# Environment
++#
++CONFIG_ENV=y
++# CONFIG_ENV_MUTABLE is not set
++CONFIG_ENV_CHECK_LEN=1024
++# CONFIG_VARIATIONS is not set
++CONFIG_NO_BOOTSTRAP=y
++# CONFIG_NOR_BOOT is not set
++# CONFIG_NAND_BOOT is not set
++# CONFIG_ONENAND_BOOT is not set
++# CONFIG_COMPANION_EVT1_BOOT is not set
++# CONFIG_COMPANION_EVT2_BOOT is not set
++# CONFIG_ENV_STARTUP_PREFIX_P is not set
++
++#
++# Regions
++#
++CONFIG_ENV_REGION_KERNEL="lnand:768k+4m"
++CONFIG_ENV_REGION_RAMDISK="lnand:4864K+4m"
++
++#
++# Overrides
++#
++# CONFIG_ENV_DEFAULT_CMDLINE_OVERRIDE is not set
++CONFIG_ENV_DEFAULT_STARTUP_OVERRIDE=y
++CONFIG_ENV_DEFAULT_STARTUP="wait 10;copy $kernelsrc $bootaddr; boot"
++CONFIG_RELOCATE_SIMPLE=y
++CONFIG_ALIASES=y
+diff --exclude .git -purN apex-1.6.8-orig/src/mach-lpc313x/memory.h apex-1.6.8/src/mach-lpc313x/memory.h
+--- apex-1.6.8-orig/src/mach-lpc313x/memory.h	2013-10-18 13:33:26.881671271 +0200
++++ apex-1.6.8/src/mach-lpc313x/memory.h	2013-10-18 13:33:41.229671533 +0200
+@@ -26,6 +26,10 @@
+ 
+ /* ----- Constants */
+ # define RAM_BANK0_START	EXT_SDRAM_PHYS
++# if defined (CONFIG_MACH_MCA)
++# define RAM_BANK0_LENGTH	0x2000000
++# else
+ # define RAM_BANK0_LENGTH	0x10000000
++# endif
+ 
+ #endif  /* __MEMORY_H__ */
