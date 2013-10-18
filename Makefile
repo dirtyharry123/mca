@@ -5,7 +5,7 @@ MKVFAT:=/sbin/mkfs.vfat
 # These files and directories need to exist
 APEX_FLASH:=BLOBS/apex_flash.bin
 APEX_SD:=BLOBS/apex_sd.bin
-INITRAMFS:=KERNEL/zImage_unpacked/initramfs
+INITRAMFS:=INITRAMFS/initramfs
 ROOTFS:=ROOTFS
 SD_MBR:=BLOBS/SD_MBR.bin
 SD_MBR_1G:=BLOBS/SD_MBR_1G.bin
@@ -43,7 +43,10 @@ $(APEX_SD): $(APEX_SD_CMD)
 apex_flash.bin: $(APEX_SD)
 $(APEX_FLASH): $(APEX_FLASH_CMD)
 	tools/apex_tool.pl -f -r "`cat $(APEX_FLASH_CMD)`" $(APEX_FLASH)
-	
+.PHONY: $(INITRAMFS)
+$(INITRAMFS):
+	$(MAKE) -C $(INITRAMFS)/../
+
 .PHONY: zImage
 zImage:  $(ZIMAGE)
 $(ZIMAGE): $(INITRAMFS) $(MCABOOT_INI)

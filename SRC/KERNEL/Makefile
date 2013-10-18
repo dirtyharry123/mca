@@ -2,6 +2,7 @@ NAME := linux
 VERSION := 2.6.28.2
 URL := https://www.kernel.org/pub/linux/kernel/v2.6/
 
+INITRAMFS := $(PWD)/../../INITRAMFS/initramfs/
 TOOLCHAIN := $(PWD)/../../toolchain/Sourcery_G++_Lite-2011.03-41/bin/
 export PATH := $(PATH):$(TOOLCHAIN)
 export CROSS_COMPILE = arm-none-linux-gnueabi-
@@ -9,6 +10,10 @@ export ARCH = arm
 export INSTALL_MOD_PATH := $(PWD)/../../ROOTFS
 
 all: zImage
+
+.PHONY: $(INITRAMFS)
+$(INITRAMFS):
+	$(MAKE) -C $(INITRAMFS)/../
 
 $(NAME)-$(VERSION).tar.bz2:
 	wget $(URL)/$(NAME)-$(VERSION).tar.bz2
@@ -47,7 +52,7 @@ $(NAME)-$(VERSION)/.config: $(NAME)-$(VERSION)/.patched
 zImage: $(NAME)-$(VERSION)/arch/arm/boot/zImage
 
 .PHONY: $(NAME)-$(VERSION)/arch/arm/boot/zImage
-$(NAME)-$(VERSION)/arch/arm/boot/zImage: $(NAME)-$(VERSION)/.config $(TOOLCHAIN)
+$(NAME)-$(VERSION)/arch/arm/boot/zImage: $(NAME)-$(VERSION)/.config $(TOOLCHAIN) $(INITRAMFS)
 	$(MAKE) -C $(NAME)-$(VERSION) zImage
 
 .PHONY: modules

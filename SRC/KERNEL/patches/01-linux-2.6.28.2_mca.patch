@@ -53,7 +53,7 @@ diff -purN linux-2.6.28.2-orig/arch/arm/configs/mca_defconfig linux-2.6.28.2/arc
 +# CONFIG_RELAY is not set
 +# CONFIG_NAMESPACES is not set
 +CONFIG_BLK_DEV_INITRD=y
-+CONFIG_INITRAMFS_SOURCE="../../../INITRAMFS/"
++CONFIG_INITRAMFS_SOURCE="../../../INITRAMFS/initramfs/"
 +CONFIG_INITRAMFS_ROOT_UID=0
 +CONFIG_INITRAMFS_ROOT_GID=0
 +CONFIG_CC_OPTIMIZE_FOR_SIZE=y
