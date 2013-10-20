@@ -65,6 +65,12 @@ $(MCA_CARD): $(ZIMAGE) $(APEX_FLASH)
 	dd if=$(APEX_FLASH) of=$(MCA_CARD) bs=512 conv=notrunc
 	dd if=$(ZIMAGE) of=$(MCA_CARD) bs=1024 seek=640 conv=notrunc
 
+.PHONY: mca_card_new
+mca_card_new: $(ZIMAGE_NEW) $(APEX_FLASH)
+	dd if=/dev/zero of=$(MCA_CARD) bs=1024 count=640
+	dd if=$(APEX_FLASH) of=$(MCA_CARD) bs=512 conv=notrunc
+	dd if=$(ZIMAGE_NEW) of=$(MCA_CARD) bs=1024 seek=640 conv=notrunc
+
 .PHONY: rootfs.jffs2
 rootfs.jffs2:  $(JFFS2)
 $(JFFS2): $(ROOTFS)

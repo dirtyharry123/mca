@@ -254,7 +254,7 @@ diff -purN linux-2.6.28.2-orig/arch/arm/configs/mca_defconfig linux-2.6.28.2/arc
 +#
 +CONFIG_ZBOOT_ROM_TEXT=0x0
 +CONFIG_ZBOOT_ROM_BSS=0x0
-+CONFIG_CMDLINE="console=ttyS0,115200n8 root=/dev/ram0 rw"
++CONFIG_CMDLINE="console=ttyS0,115200n8 ramdisk_size=14000K"
 +# CONFIG_XIP_KERNEL is not set
 +# CONFIG_KEXEC is not set
 +
