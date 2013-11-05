@@ -1,0 +1,17 @@
+diff -purN linux-2.6.28.2-orig/kernel/timer.c linux-2.6.28.2-work/kernel/timer.c
+--- linux-2.6.28.2-orig/kernel/timer.c	2009-01-25 01:42:07.000000000 +0100
++++ linux-2.6.28.2-work/kernel/timer.c	2013-11-05 22:14:35.926236317 +0100
+@@ -1253,6 +1253,13 @@ signed long __sched schedule_timeout(sig
+ 
+ 	switch (timeout)
+ 	{
++/*
++ * Workaround for bug in proprietary kernel-module mio.ko for Matrix Cam Air
++ */
++#ifdef CONFIG_MACH_MCA
++  case 100000:
++    return schedule_timeout_interruptible(5);
++#endif
+ 	case MAX_SCHEDULE_TIMEOUT:
+ 		/*
+ 		 * These two special cases are useful to be comfortable
