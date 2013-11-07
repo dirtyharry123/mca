@@ -10,7 +10,7 @@ diff -purN linux-2.6.28.2-orig/kernel/timer.c linux-2.6.28.2-work/kernel/timer.c
 + */
 +#ifdef CONFIG_MACH_MCA
 +  case 100000:
-+    return schedule_timeout_interruptible(5);
++    return schedule_timeout_interruptible(1);
 +#endif
  	case MAX_SCHEDULE_TIMEOUT:
  		/*
