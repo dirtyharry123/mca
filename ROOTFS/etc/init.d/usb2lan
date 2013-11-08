@@ -1,0 +1,35 @@
+#!/bin/sh
+# Startscript - ASIX Usb2Lan Adapter
+
+if [ "$1" = "start" -o "$1" = "restart" ] && [ "$EXIST_USB2LAN" == "y" ]; then
+	insmod /etc/LanDriver/asix.ko
+	dmesg|grep eth0
+	if [ $? -eq 0 ]; then
+		# hier WIFI deaktivieren
+		if [ "$ETH0_ONLY" == "y" ]; then ifconfig ra0 down; fi;
+		ifconfig eth0 up 
+		if [ "$(mcai GET NET_TYPE)" = "AUTO" ]; then
+			echo "Setting up networking on eth0: "
+			$SYSCFG_DHCPC_CMD eth0
+		else
+			# non-dhcp network startup
+			IPSTR=$(mcai GET NET_IPADDR)
+			if [ -n "$IPSTR" ] && [ "$ETH0_ONLY" == "y" ]; then
+				ifconfig eth0 $(mcai GET NET_IPADDR) netmask $(mcai GET NET_NETMASK)
+				GATEWAY0=$(mcai GET NET_GATEWAY)
+				if [ -n "$GATEWAY0" ]; then
+					echo "Adding static route for default gateway to $GATEWAY0: "
+					route add default gateway $GATEWAY0 eth0
+				fi
+				NAMESERVER0=$(mcai GET NET_DNS1)
+				if [ -n "$NAMESERVER0" ]; then
+				echo "Setting nameserver to $NAMESERVER0 in /etc/resolv.conf: "
+				echo "nameserver $NAMESERVER0" >> /tmp/resolv.conf
+				fi
+			else
+				# use dhcp
+				$SYSCFG_DHCPC_CMD eth0
+			fi
+		fi
+	fi
+fi
