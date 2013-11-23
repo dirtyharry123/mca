@@ -1,0 +1,98 @@
+#!/bin/sh
+
+if [ "$1" = "start" -o "$1" = "restart" ]; then
+echo wireless start: `date +%T` >> /var/log/startTime.txt
+    echo "Setting up networking on loopback device: "
+    ifconfig lo 127.0.0.1
+    route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+    echo "Prepare wireless interface"
+    insmod /etc/Wireless/rt3070sta.ko
+#    sleep 2 
+    ifconfig $INTERFACE0 up
+    iwconfig $INTERFACE0 rate auto
+
+    if [ -n "$(mcai GET WIFI_NETWORK_TYPE)" ];then 	
+      NetworkType=$(mcai GET WIFI_NETWORK_TYPE)
+      echo NetworkType=$NetworkType
+      iwpriv ra0 set NetworkType=$NetworkType       
+    fi
+    if [ -n "$(mcai GET WIFI_AUTH_MODE)" ];then 	
+      AuthMode=$(mcai GET WIFI_AUTH_MODE)
+      echo AuthMode=$AuthMode
+      iwpriv ra0 set AuthMode=$AuthMode
+    fi
+    if [ -n "$(mcai GET WIFI_ENCRYPT_TYPE)" ];then 	
+      EncrypType=$(mcai GET WIFI_ENCRYPT_TYPE)
+      echo EncrypType=$EncrypType
+      iwpriv ra0 set EncrypType=$EncrypType
+    fi
+    if [ -n "$(mcai GET WIFI_SSID)" ];then 	
+      SSID=$(mcai GET WIFI_SSID)
+      echo SSID=$SSID
+      iwpriv ra0 set SSID="$SSID"
+    fi
+    if [ -n "$(mcai GET WIFI_WPAPSK)" ];then 	
+      WPAPSK=$(mcai GET WIFI_WPAPSK)
+      echo WPAPSK=$WPAPSK
+      iwpriv ra0 set WPAPSK="$WPAPSK"
+    fi
+    if [ -n "$(mcai GET WIFI_DEFAULT_KEY_ID)" ];then 	
+      DefaultKeyID=$(mcai GET WIFI_DEFAULT_KEY_ID)
+      echo DefaultKeyID=$DefaultKeyID
+      iwpriv ra0 set DefaultKeyID=$DefaultKeyID
+    fi
+    if [ -n "$(mcai GET WIFI_KEY1)" ];then 	
+      Key1=$(mcai GET WIFI_KEY1)
+      echo Key1=$Key1
+      iwpriv ra0 set Key1="$Key1"
+    fi
+    if [ -n "$(mcai GET WIFI_KEY2)" ];then 	
+      Key2=$(mcai GET WIFI_KEY2)
+      echo Key2=$Key2
+      iwpriv ra0 set Key2="$Key2"
+    fi
+    if [ -n "$(mcai GET WIFI_KEY3)" ];then 	
+      Key3=$(mcai GET WIFI_KEY3)
+      echo Key3=$Key3
+      iwpriv ra0 set Key3="$Key3"
+    fi
+    if [ -n "$(mcai GET WIFI_KEY4)" ];then 	
+      Key4=$(mcai GET WIFI_KEY4)
+      echo Key4=$Key4
+      iwpriv ra0 set Key4="$Key4"
+    fi
+
+	# ???
+   if [ -f /etc/sysctl.conf -a -x /bin/sysctl ]
+    then
+        echo "Running sysctl"
+        sysctl -p /etc/sysctl.conf >/dev/null 2>&1
+    fi
+
+    # remove the nameserver file
+    echo "" > /tmp/resolv.conf
+    
+    if [ "$(mcai GET NET_TYPE)" = "AUTO" ]
+    then
+	echo wireless DHCPc start: `date +%T` >> /var/log/startTime.txt
+        $SYSCFG_DHCPC_CMD $INTERFACE0
+    else  
+        # non-dhcp network startup        
+        ifconfig $INTERFACE0 $(mcai GET NET_IPADDR) netmask $(mcai GET NET_NETMASK)
+
+        GATEWAY0=$(mcai GET NET_GATEWAY)
+        if [ -n "$GATEWAY0" ]
+        then 
+        echo "Adding static route for default gateway to $GATEWAY0: "
+        route add default gateway $GATEWAY0 $INTERFACE0
+        fi
+        NAMESERVER0=$(mcai GET NET_DNS1)
+        if [ -n "$NAMESERVER0" ]
+        then
+        echo "Setting nameserver to $NAMESERVER0 in /etc/resolv.conf: "
+        echo "nameserver $NAMESERVER0" >> /tmp/resolv.conf
+        fi
+    fi    
+ echo wireless start ende: `date +%T` >> /var/log/startTime.txt 
+fi

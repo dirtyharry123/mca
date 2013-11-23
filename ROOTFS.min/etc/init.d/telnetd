@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# telnetd
+if [ "$1" = "stop" -o "$1" = "restart" ]
+then                                                                            
+    echo "Stopping the Telnet server: "
+    killall telnetd
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]                                       
+then
+    echo "Starting the Telnet server: "
+    telnetd $TELNETD_ARGS
+fi

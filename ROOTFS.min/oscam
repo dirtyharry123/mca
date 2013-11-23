@@ -1,0 +1,7 @@
+#!/bin/sh
+cd /tmp
+#/oscam-svn8736-mca-webif "$@"
+# 65535 
+/oscam-svn8903-mca-webif -d 129  "$@"
+#/oscam.mca -d 129 "$@"
+exit 0

@@ -1,0 +1,3 @@
+PATH=/bin:/sbin
+PS1='[\u@\h \W]\$ '
+export PATH

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ "$1" = "start" -o "$1" = "restart" ]
+then
+  echo -n "Insert mio driver module ... "
+  insmod /mio.ko
+  echo "OK"
+
+  echo -n "  - create FiFo's ... "
+  mkfifo -m 666 /tmp/mdbg
+  mkfifo -m 666 /tmp/mdvbi
+  mkfifo -m 666 /tmp/mflt
+  mkfifo -m 666 /tmp/mdesc
+  echo "OK"
+  
+fi
+
